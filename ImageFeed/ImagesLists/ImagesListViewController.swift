@@ -7,19 +7,27 @@
 
 import UIKit
 
-class ImagesListViewController: UIViewController {
+// MARK: - Private types
+   
+   private enum Layout {
+       static let tableVerticalInset: CGFloat = 12
+       static let imageVerticalInset: CGFloat = 8
+       static let horizontalInset: CGFloat = 16
+       static let defaultHeight: CGFloat = 200
+   }
+
+    private enum Images {
+        static let liked = "FilledHeart"
+        static let notLiked = "Heart"
+    }
+
+final class ImagesListViewController: UIViewController {
     
-    // MARK: - Private types
-       
-       private enum Layout {
-           static let tableVerticalInset: CGFloat = 12
-           static let imageVerticalInset: CGFloat = 8
-           static let horizontalInset: CGFloat = 16
-           static let defaultHeight: CGFloat = 200
-       }
-    
+    // MARK: - IBOutlets
+    @IBOutlet private var tableView: UITableView!
+
     // MARK: - Private properties
-    private let photosName: [String] = Array(0..<20).map{ "\($0)" }
+    private let photoNames: [String] = Array(0..<20).map(String.init)
     private lazy var dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateStyle = .long
@@ -39,13 +47,9 @@ class ImagesListViewController: UIViewController {
         )
     }
     
-    // MARK: - IBOutlets
-    @IBOutlet private var tableView: UITableView!
-
-    
-    // MARK: - Private functions
+    // MARK: - Private methods
     private func image(for indexPath: IndexPath) -> UIImage? {
-        let imageName = photosName[indexPath.row]
+        let imageName = photoNames[indexPath.row]
         return UIImage(named: imageName)
     }
 
@@ -56,15 +60,15 @@ class ImagesListViewController: UIViewController {
         cell.dateLabel.text = dateFormatter.string(from: Date())
         
         let isLiked = indexPath.row % 2 == 0
-        let likeImageName = isLiked ? "FilledHeart" : "Heart"
+        let likeImageName = isLiked ? Images.liked : Images.notLiked
         cell.likeButton.setImage(UIImage(named: likeImageName), for: .normal)
     }
 }
 
-    // MARK: - Extentions
+    // MARK: - UITableViewDataSource
 extension ImagesListViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return photosName.count
+        return photoNames.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -79,6 +83,7 @@ extension ImagesListViewController: UITableViewDataSource {
         }
 }
 
+    // MARK: - UITableViewDelegate
 extension ImagesListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         guard let image = image(for: indexPath) else {
