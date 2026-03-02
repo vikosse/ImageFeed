@@ -17,10 +17,10 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="AxB-bc-IiQ">
-                                <rect key="frame" x="-20" y="39" width="433" height="799"/>
+                                <rect key="frame" x="0.0" y="59" width="393" height="759"/>
                                 <subviews>
                                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="0" translatesAutoresizingMaskIntoConstraints="NO" id="vCN-CH-Gsv">
-                                        <rect key="frame" x="20" y="-41" width="393" height="857"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="393" height="857"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     </imageView>
                                 </subviews>
@@ -30,7 +30,7 @@
                                     <outlet property="delegate" destination="pFL-Cu-dRe" id="Jer-ij-3xy"/>
                                 </connections>
                             </scrollView>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1cG-uT-aCE">
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1cG-uT-aCE" userLabel="ShareButton">
                                 <rect key="frame" x="171.66666666666666" y="751" width="50" height="50"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="50" id="5KX-41-ReJ"/>
@@ -42,11 +42,11 @@
                                     <action selector="didTapShareButton:" destination="pFL-Cu-dRe" eventType="touchUpInside" id="CWf-HV-X0y"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Trr-mg-x3V">
-                                <rect key="frame" x="8" y="67" width="48" height="48"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Trr-mg-x3V" userLabel="BackButton">
+                                <rect key="frame" x="8" y="67" width="24" height="24"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="48" id="X3Y-uV-Sju"/>
-                                    <constraint firstAttribute="height" constant="48" id="nJa-ad-8Vt"/>
+                                    <constraint firstAttribute="width" constant="24" id="X3Y-uV-Sju"/>
+                                    <constraint firstAttribute="height" constant="24" id="nJa-ad-8Vt"/>
                                 </constraints>
                                 <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                 <state key="normal" image="BackButton"/>
@@ -59,14 +59,14 @@
                         <color key="backgroundColor" name="YP Black"/>
                         <color key="tintColor" name="YP Black"/>
                         <constraints>
-                            <constraint firstItem="AxB-bc-IiQ" firstAttribute="leading" secondItem="efZ-Fi-FNV" secondAttribute="leading" id="1bY-Y5-emr"/>
                             <constraint firstItem="Trr-mg-x3V" firstAttribute="top" secondItem="efZ-Fi-FNV" secondAttribute="top" constant="8" id="D5I-VA-esY"/>
-                            <constraint firstItem="efZ-Fi-FNV" firstAttribute="trailing" secondItem="AxB-bc-IiQ" secondAttribute="trailing" id="VPv-Pa-EaF"/>
+                            <constraint firstItem="AxB-bc-IiQ" firstAttribute="trailing" secondItem="efZ-Fi-FNV" secondAttribute="trailing" id="Jf7-3i-ms5"/>
+                            <constraint firstItem="AxB-bc-IiQ" firstAttribute="leading" secondItem="efZ-Fi-FNV" secondAttribute="leading" id="UOg-7r-ABG"/>
                             <constraint firstItem="efZ-Fi-FNV" firstAttribute="bottom" secondItem="1cG-uT-aCE" secondAttribute="bottom" constant="17" id="WR7-JK-z8v"/>
-                            <constraint firstItem="efZ-Fi-FNV" firstAttribute="bottom" secondItem="AxB-bc-IiQ" secondAttribute="bottom" id="aPu-jS-zij"/>
                             <constraint firstItem="1cG-uT-aCE" firstAttribute="centerX" secondItem="efZ-Fi-FNV" secondAttribute="centerX" id="bwZ-3F-ptA"/>
+                            <constraint firstItem="AxB-bc-IiQ" firstAttribute="top" secondItem="efZ-Fi-FNV" secondAttribute="top" id="hhv-EF-VPu"/>
                             <constraint firstItem="Trr-mg-x3V" firstAttribute="leading" secondItem="efZ-Fi-FNV" secondAttribute="leading" constant="8" id="vKE-X6-dzK"/>
-                            <constraint firstItem="AxB-bc-IiQ" firstAttribute="top" secondItem="efZ-Fi-FNV" secondAttribute="top" id="wnL-La-6mv"/>
+                            <constraint firstItem="AxB-bc-IiQ" firstAttribute="bottom" secondItem="efZ-Fi-FNV" secondAttribute="bottom" id="yKU-7S-r8M"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="jVG-fs-HZ7"/>
@@ -161,7 +161,7 @@
                                             <outlet property="cellImageView" destination="FhH-Hc-XrT" id="tTQ-HL-k4s"/>
                                             <outlet property="dateLabel" destination="DfX-Y4-twu" id="uVc-T4-UNo"/>
                                             <outlet property="likeButton" destination="sOF-kN-KXu" id="elV-ep-d1R"/>
-                                            <segue destination="pFL-Cu-dRe" kind="presentation" modalPresentationStyle="fullScreen" id="PzD-vX-a0M"/>
+                                            <segue destination="pFL-Cu-dRe" kind="presentation" identifier="ShowSingleImage" modalPresentationStyle="fullScreen" id="PzD-vX-a0M"/>
                                         </connections>
                                     </tableViewCell>
                                 </prototypes>
@@ -194,7 +194,7 @@
             <objects>
                 <viewController title="Profile Scene" id="6Fe-5t-aJO" customClass="ProfileViewController" customModule="ImageFeed" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="sIP-aB-tYz">
-                        <rect key="frame" x="0.0" y="0.0" width="393" height="769"/>
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="735"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <viewLayoutGuide key="safeArea" id="Hr5-QP-7w8"/>
                         <color key="backgroundColor" name="YP Black"/>

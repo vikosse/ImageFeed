@@ -48,6 +48,16 @@ final class ImagesListViewController: UIViewController {
     }
     
     // MARK: - Private methods
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        guard segue.identifier == "ShowSingleImage",
+              let vc = segue.destination as? SingleImageViewController,
+              let indexPath = tableView.indexPathForSelectedRow else {
+            return
+        }
+
+        vc.image = image(for: indexPath)
+    }
+    
     private func image(for indexPath: IndexPath) -> UIImage? {
         let imageName = photoNames[indexPath.row]
         return UIImage(named: imageName)

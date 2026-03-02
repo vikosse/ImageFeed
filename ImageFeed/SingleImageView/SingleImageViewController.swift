@@ -9,7 +9,7 @@ import UIKit
 final class SingleImageViewController: UIViewController {
     
     // MARK: - Private property
-    private var image: UIImage? {
+    var image: UIImage? {
         didSet {
             if isViewLoaded {
                 updateImage()
