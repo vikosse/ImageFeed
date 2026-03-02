@@ -28,7 +28,7 @@ final class ProfileViewController: UIViewController {
     
     // MARK: - UI setup
     private func setAvatar() {
-        avatarImageView.image = UIImage(named: "Avatar")
+        avatarImageView.image = UIImage(resource: .avatar)
         avatarImageView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(avatarImageView)
         NSLayoutConstraint.activate([
@@ -42,7 +42,7 @@ final class ProfileViewController: UIViewController {
     private func setName() {
         nameLabel.text = "Екатерина Новикова"
         nameLabel.font = UIFont.boldSystemFont(ofSize: 23)
-        nameLabel.textColor = UIColor(named: "YP White")
+        nameLabel.textColor = UIColor(resource: .ypWhite)
         nameLabel.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(nameLabel)
         nameLabel.topAnchor
@@ -57,7 +57,7 @@ final class ProfileViewController: UIViewController {
     private func setUserName() {
         usernameLabel.text = "@ekaterina_nov"
         usernameLabel.font = UIFont.systemFont(ofSize: 13, weight: .regular)
-        usernameLabel.textColor = UIColor(named: "YP Gray")
+        usernameLabel.textColor = UIColor(resource: .ypGray)
         usernameLabel.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(usernameLabel)
         usernameLabel.topAnchor
@@ -72,7 +72,7 @@ final class ProfileViewController: UIViewController {
     private func setDescription() {
         descriptionLabel.text = "Hello, world!"
         descriptionLabel.font = UIFont.systemFont(ofSize: 13, weight: .regular)
-        descriptionLabel.textColor = UIColor(named: "YP White")
+        descriptionLabel.textColor = UIColor(resource: .ypWhite)
         descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(descriptionLabel)
         descriptionLabel.topAnchor
@@ -85,7 +85,7 @@ final class ProfileViewController: UIViewController {
     }
     
     private func setLogoutButton() {
-        logoutButton.setImage(UIImage(named: "Logout Button"), for: .normal)
+        logoutButton.setImage(UIImage(resource: .logoutButton), for: .normal)
         logoutButton.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(logoutButton)
         NSLayoutConstraint.activate([
