@@ -14,8 +14,45 @@ final class OAuth2Service {
     // MARK: - Private properties
     private let urlSession = URLSession.shared
     private let tokenStorage = OAuth2TokenStorage.shared
+    private let decoder = JSONDecoder()
     
     private init() {}
+    
+    // MARK: - Public methods
+    func fetchOAuthToken(
+        code: String,
+        completion: @escaping (Result<String, Error>) -> Void
+    ) {
+        guard let request = makeOAuthTokenRequest(code: code) else {
+            completion(.failure(NetworkError.invalidRequest))
+            return
+        }
+        
+        let task = urlSession.data(for: request) { result in
+            switch result {
+            case .success(let data):
+                do {
+                    let responseBody = try self.decoder.decode(
+                        OAuthTokenResponseBody.self,
+                        from: data
+                    )
+                    
+                    let accessToken = responseBody.accessToken
+                    self.tokenStorage.token = accessToken
+                    completion(.success(accessToken))
+                } catch {
+                    print("Decoding error: \(error)")
+                    completion(.failure(NetworkError.decodingError(error)))
+                }
+                
+            case .failure(let error):
+                print("OAuth token request error: \(error)")
+                completion(.failure(error))
+            }
+        }
+        
+        task.resume()
+    }
     
     // MARK: - Private methods
     private func makeOAuthTokenRequest(code: String) -> URLRequest? {
@@ -36,43 +73,7 @@ final class OAuth2Service {
         }
         
         var request = URLRequest(url: url)
-        request.httpMethod = "POST"
+        request.httpMethod = HTTPMethod.post.rawValue
         return request
-    }
-    
-    // MARK: - Public methods
-    func fetchOAuthToken(
-        code: String,
-        completion: @escaping (Result<String, Error>) -> Void
-    ) {
-        guard let request = makeOAuthTokenRequest(code: code) else {
-            completion(.failure(NetworkError.invalidRequest))
-            return
-        }
-        
-        let task = urlSession.data(for: request) { result in
-            switch result {
-            case .success(let data):
-                do {
-                    let responseBody = try JSONDecoder().decode(
-                        OAuthTokenResponseBody.self,
-                        from: data
-                    )
-                    
-                    let accessToken = responseBody.accessToken
-                    self.tokenStorage.token = accessToken
-                    completion(.success(accessToken))
-                } catch {
-                    print("Decoding error: \(error)")
-                    completion(.failure(NetworkError.decodingError(error)))
-                }
-                
-            case .failure(let error):
-                print("OAuth token request error: \(error)")
-                completion(.failure(error))
-            }
-        }
-        
-        task.resume()
     }
 }
