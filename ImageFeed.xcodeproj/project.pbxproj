@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		FEB7D5562F5DE7E500099FB3 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FEB7D5552F5DE7E500099FB3 /* WebKit.framework */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		FED8116B2F3287DF006AEECA /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -24,6 +28,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		FEB7D5552F5DE7E500099FB3 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
 		FED811542F3287DE006AEECA /* ImageFeed.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ImageFeed.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FED8116A2F3287DF006AEECA /* ImageFeedTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ImageFeedTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		FED811742F3287DF006AEECA /* ImageFeedUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ImageFeedUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -65,6 +70,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FEB7D5562F5DE7E500099FB3 /* WebKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -85,12 +91,21 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		FEB7D5542F5DE7E400099FB3 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				FEB7D5552F5DE7E500099FB3 /* WebKit.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		FED8114B2F3287DE006AEECA = {
 			isa = PBXGroup;
 			children = (
 				FED811562F3287DE006AEECA /* ImageFeed */,
 				FED8116D2F3287DF006AEECA /* ImageFeedTests */,
 				FED811772F3287DF006AEECA /* ImageFeedUITests */,
+				FEB7D5542F5DE7E400099FB3 /* Frameworks */,
 				FED811552F3287DE006AEECA /* Products */,
 			);
 			sourceTree = "<group>";
