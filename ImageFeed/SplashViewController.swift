@@ -10,6 +10,7 @@ final class SplashViewController: UIViewController {
     
     // MARK: - Private properties
     private let storage = OAuth2TokenStorage.shared
+    private let profileService = ProfileService.shared
     private let showAuthenticationScreenSegueIdentifier = "ShowAuthenticationScreen"
     private let tabBarViewControllerIdentifier = "TabBarViewController"
 
@@ -17,14 +18,34 @@ final class SplashViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
-        if storage.token != nil {
-            switchToTabBarController()
-        } else {
-            performSegue(withIdentifier: showAuthenticationScreenSegueIdentifier, sender: nil)
-        }
+        guard let token = storage.token else {
+                    performSegue(withIdentifier: showAuthenticationScreenSegueIdentifier, sender: nil)
+                    return
+                }
+                
+                fetchProfile(token: token)
     }
     
     // MARK: - Private methods
+    private func fetchProfile(token: String) {
+        UIBlockingProgressHUD.show()
+        
+        profileService.fetchProfile(token) { [weak self] result in
+            guard let self else { return }
+            
+            switch result {
+            case .success(let profile):
+                ProfileImageService.shared.fetchProfileImageURL(username: profile.username) { _ in }
+                UIBlockingProgressHUD.dismiss()
+                self.switchToTabBarController()
+                
+            case .failure(let error):
+                UIBlockingProgressHUD.dismiss()
+                print("Failed to fetch profile: \(error)")
+            }
+        }
+    }
+    
     private func switchToTabBarController() {
         guard let window = UIApplication.shared.connectedScenes
             .compactMap({ $0 as? UIWindowScene })
@@ -64,6 +85,10 @@ extension SplashViewController {
 extension SplashViewController: AuthViewControllerDelegate {
     func didAuthenticate(_ vc: AuthViewController) {
         vc.dismiss(animated: true)
-        switchToTabBarController()
+        guard let token = storage.token else {
+                    return
+                }
+                
+                fetchProfile(token: token)
     }
 }
