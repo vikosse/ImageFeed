@@ -28,7 +28,9 @@ final class ProfileService {
         assert(Thread.isMainThread)
         
         guard lastToken != token else {
-            print("[ProfileService.fetchProfile]: invalidRequest - repeated token")
+            print(
+                "[ProfileService.fetchProfile]: invalidRequest - repeated token"
+            )
             completion(.failure(NetworkError.invalidRequest))
             return
         }
@@ -36,17 +38,17 @@ final class ProfileService {
         task?.cancel()
         
         guard let request = makeProfileRequest(token: token) else {
-            print("[ProfileService.fetchProfile]: invalidRequest - failed to create request")
+            print(
+                "[ProfileService.fetchProfile]: invalidRequest - failed to create request"
+            )
             completion(.failure(NetworkError.invalidRequest))
             return
         }
         
         lastToken = token
         
-        let task = urlSession.objectTask(for: request) { [weak self] (
-            result: Result<ProfileResult,
-            Error>
-        ) in
+        let task = urlSession.objectTask(for: request) { [weak self]
+            (result: Result<ProfileResult,Error>) in
             guard let self else { return }
             
             switch result {
@@ -56,7 +58,9 @@ final class ProfileService {
                 completion(.success(profile))
                 
             case .failure(let error):
-                print("[ProfileService.fetchProfile]: failure - error: \(error.localizedDescription)")
+                print(
+                    "[ProfileService.fetchProfile]: failure - error: \(error.localizedDescription)"
+                )
                 completion(.failure(error))
             }
             

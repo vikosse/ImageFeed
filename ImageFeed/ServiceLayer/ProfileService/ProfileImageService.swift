@@ -32,7 +32,9 @@ final class ProfileImageService {
         assert(Thread.isMainThread)
         
         guard lastUsername != username else {
-            print("[ProfileImageService.fetchProfileImageURL]: invalidRequest - repeated username: \(username)")
+            print(
+                "[ProfileImageService.fetchProfileImageURL]: invalidRequest - repeated username: \(username)"
+            )
             completion(.failure(NetworkError.invalidRequest))
             return
         }
@@ -46,17 +48,17 @@ final class ProfileImageService {
                 token: token
             )
         else {
-            print("[ProfileImageService.fetchProfileImageURL]: invalidRequest - username: \(username)")
+            print(
+                "[ProfileImageService.fetchProfileImageURL]: invalidRequest - username: \(username)"
+            )
             completion(.failure(NetworkError.invalidRequest))
             return
         }
         
         lastUsername = username
         
-        let task = urlSession.objectTask(for: request) { [weak self] (
-            result: Result<UserResult,
-            Error>
-        ) in
+        let task = urlSession.objectTask(for: request) { [weak self]
+            (result: Result<UserResult,Error>) in
             guard let self else { return }
             
             switch result {
@@ -73,7 +75,9 @@ final class ProfileImageService {
                 )
                 
             case .failure(let error):
-                print("[ProfileImageService.fetchProfileImageURL]: failure - username: \(username), error: \(error.localizedDescription)")
+                print(
+                    "[ProfileImageService.fetchProfileImageURL]: failure - username: \(username), error: \(error.localizedDescription)"
+                )
                 completion(.failure(error))
             }
             

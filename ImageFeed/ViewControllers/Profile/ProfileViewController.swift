@@ -26,13 +26,12 @@ final class ProfileViewController: UIViewController {
         
         view.backgroundColor = UIColor(resource: .ypBlack)
         
-        setAvatar()
-        setName()
-        setUserName()
-        setDescription()
-        setLogoutButton()
-        
-        
+        setupAvatar()
+        setupLogoutButton()
+        setupName()
+        setupUserName()
+        setupDescription()
+
         if let profile = profileService.profile {
             updateProfileDetails(profile: profile)
         }
@@ -49,40 +48,23 @@ final class ProfileViewController: UIViewController {
         updateAvatar()
     }
     
+    override func viewDidLayoutSubviews() {
+           super.viewDidLayoutSubviews()
+           avatarImageView.layer.cornerRadius = avatarImageView.bounds.width / 2
+       }
+    
     deinit {
         if let profileImageServiceObserver {
             NotificationCenter.default
                 .removeObserver(profileImageServiceObserver)
         }
     }
-    
-    // MARK: - Private methods
-    private func updateProfileDetails(profile: Profile) {
-        nameLabel.text = profile.name
-        usernameLabel.text = profile.loginName
-        descriptionLabel.text = profile.bio ?? ""
-    }
-    
-    private func updateAvatar() {
-        guard
-            let profileImageURL = ProfileImageService.shared.avatarURL,
-            let url = URL(string: profileImageURL)
-        else {
-            avatarImageView.image = UIImage(resource: .defaultUserPic)
-            return
-        }
-            
-        avatarImageView.kf.setImage(
-            with: url,
-            placeholder: UIImage(resource: .defaultUserPic)
-        )
-    }
-    
+
     // MARK: - UI setup
-    private func setAvatar() {
+    private func setupAvatar() {
         avatarImageView.image = UIImage(resource: .defaultUserPic)
         avatarImageView.translatesAutoresizingMaskIntoConstraints = false
-        avatarImageView.layer.cornerRadius = 35
+        avatarImageView.contentMode = .scaleAspectFill
         avatarImageView.clipsToBounds = true
         
         view.addSubview(avatarImageView)
@@ -102,7 +84,7 @@ final class ProfileViewController: UIViewController {
         ])
     }
     
-    private func setName() {
+    private func setupName() {
         nameLabel.font = UIFont.boldSystemFont(ofSize: 23)
         nameLabel.textColor = UIColor(resource: .ypWhite)
         nameLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -117,37 +99,7 @@ final class ProfileViewController: UIViewController {
             .constraint(equalTo: avatarImageView.leadingAnchor).isActive = true
     }
     
-    private func setUserName() {
-        usernameLabel.font = UIFont.systemFont(ofSize: 13, weight: .regular)
-        usernameLabel.textColor = UIColor(resource: .ypGray)
-        usernameLabel.translatesAutoresizingMaskIntoConstraints = false
-        
-        view.addSubview(usernameLabel)
-        usernameLabel.topAnchor
-            .constraint(
-                equalTo: nameLabel.bottomAnchor,
-                constant: 8
-            ).isActive = true
-        usernameLabel.leadingAnchor
-            .constraint(equalTo: avatarImageView.leadingAnchor).isActive = true
-    }
-    
-    private func setDescription() {
-        descriptionLabel.font = UIFont.systemFont(ofSize: 13, weight: .regular)
-        descriptionLabel.textColor = UIColor(resource: .ypWhite)
-        descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
-        
-        view.addSubview(descriptionLabel)
-        descriptionLabel.topAnchor
-            .constraint(
-                equalTo: usernameLabel.bottomAnchor,
-                constant: 8
-            ).isActive = true
-        descriptionLabel.leadingAnchor
-            .constraint(equalTo: avatarImageView.leadingAnchor).isActive = true
-    }
-    
-    private func setLogoutButton() {
+    private func setupLogoutButton() {
         logoutButton.setImage(UIImage(resource: .logoutButton), for: .normal)
         logoutButton.translatesAutoresizingMaskIntoConstraints = false
         
@@ -166,5 +118,58 @@ final class ProfileViewController: UIViewController {
                     constant: 45
                 )
         ])
+    }
+    
+    private func setupUserName() {
+        usernameLabel.font = UIFont.systemFont(ofSize: 13, weight: .regular)
+        usernameLabel.textColor = UIColor(resource: .ypGray)
+        usernameLabel.translatesAutoresizingMaskIntoConstraints = false
+        
+        view.addSubview(usernameLabel)
+        usernameLabel.topAnchor
+            .constraint(
+                equalTo: nameLabel.bottomAnchor,
+                constant: 8
+            ).isActive = true
+        usernameLabel.leadingAnchor
+            .constraint(equalTo: avatarImageView.leadingAnchor).isActive = true
+    }
+    
+    private func setupDescription() {
+        descriptionLabel.font = UIFont.systemFont(ofSize: 13, weight: .regular)
+        descriptionLabel.textColor = UIColor(resource: .ypWhite)
+        descriptionLabel.numberOfLines = 0
+        descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
+        
+        view.addSubview(descriptionLabel)
+        NSLayoutConstraint.activate([
+            descriptionLabel.topAnchor
+                .constraint(equalTo: usernameLabel.bottomAnchor, constant: 8),
+            descriptionLabel.leadingAnchor
+                .constraint(equalTo: avatarImageView.leadingAnchor),
+            descriptionLabel.trailingAnchor
+                .constraint(equalTo: logoutButton.trailingAnchor)
+        ])
+    }
+    
+    private func updateProfileDetails(profile: Profile) {
+        nameLabel.text = profile.name
+        usernameLabel.text = profile.loginName
+        descriptionLabel.text = profile.bio ?? ""
+    }
+    
+    private func updateAvatar() {
+        guard
+            let profileImageURL = ProfileImageService.shared.avatarURL,
+            let url = URL(string: profileImageURL)
+        else {
+            avatarImageView.image = UIImage(resource: .defaultUserPic)
+            return
+        }
+            
+        avatarImageView.kf.setImage(
+            with: url,
+            placeholder: UIImage(resource: .defaultUserPic)
+        )
     }
 }

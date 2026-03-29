@@ -44,7 +44,8 @@ final class OAuth2Service {
         
         lastCode = code
         
-        let task = urlSession.objectTask(for: request) { [weak self] (result: Result<OAuthTokenResponseBody, Error>) in
+        let task = urlSession.objectTask(for: request) { [weak self]
+            (result: Result<OAuthTokenResponseBody,Error>) in
             guard let self else { return }
             
             switch result {
@@ -56,10 +57,12 @@ final class OAuth2Service {
                 self.lastCode = nil
                 
             case .failure(let error):
-                    print("[OAuth2Service.fetchOAuthToken]: failure - code: \(code), error: \(error.localizedDescription)")
-                    completion(.failure(error))
-                    self.task = nil
-                    self.lastCode = nil
+                print(
+                    "[OAuth2Service.fetchOAuthToken]: failure - code: \(code), error: \(error.localizedDescription)"
+                )
+                completion(.failure(error))
+                self.task = nil
+                self.lastCode = nil
             }
         }
         
