@@ -7,7 +7,7 @@
 import UIKit
 
 final class SingleImageViewController: UIViewController {
-    
+
     // MARK: - Private property
     var image: UIImage? {
         didSet {
@@ -16,9 +16,9 @@ final class SingleImageViewController: UIViewController {
             }
         }
     }
-    
+
     // MARK: - IB Outlets & Action
-    
+
     @IBOutlet private weak var imageView: UIImageView!
     @IBOutlet private weak var scrollView: UIScrollView!
     @IBAction private func didTapBackButton() {
@@ -29,20 +29,20 @@ final class SingleImageViewController: UIViewController {
         let share = UIActivityViewController(activityItems: [image], applicationActivities: nil)
         present(share, animated: true)
     }
-    
+
     // MARK: - Lifecycle
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         scrollView.minimumZoomScale = 0.1
         scrollView.maximumZoomScale = 1.25
-        
+
         updateImage()
     }
-    
+
     // MARK: - Private methods
-    
+
     private func rescaleAndCenterImageInScrollView(image: UIImage) {
         let minZoomScale = scrollView.minimumZoomScale
         let maxZoomScale = scrollView.maximumZoomScale
@@ -74,14 +74,14 @@ final class SingleImageViewController: UIViewController {
 
         updateInsetsForCentering()
     }
-    
+
     private func updateInsetsForCentering() {
         let scrollSize = scrollView.bounds.size
         let contentSize = scrollView.contentSize
-        
+
         let verticalInset = max(0, (scrollSize.height - contentSize.height) / 2)
         let horizontalInset = max(0, (scrollSize.width - contentSize.width) / 2)
-        
+
         scrollView.contentInset = UIEdgeInsets(
             top: verticalInset,
             left: horizontalInset,
@@ -89,26 +89,26 @@ final class SingleImageViewController: UIViewController {
             right: horizontalInset
         )
     }
-    
+
     private func updateImage() {
         guard let image else { return }
-        
+
         imageView.image = image
         imageView.frame.size = image.size
-        
+
         rescaleAndCenterImageInScrollView(image: image)
     }
 }
 // MARK: - UIScrollViewDelegate
 extension SingleImageViewController: UIScrollViewDelegate {
     func viewForZooming(in scrollView: UIScrollView) -> UIView? {
-        return imageView
+        imageView
     }
-    
+
     func scrollViewDidZoom(_ scrollView: UIScrollView) {
         updateInsetsForCentering()
     }
-    
+
     func scrollViewDidEndZooming(_ scrollView: UIScrollView, with view: UIView?, atScale scale: CGFloat) {
         updateInsetsForCentering()
     }

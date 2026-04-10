@@ -5,16 +5,16 @@ extension URLSession {
         for request: URLRequest,
         completion: @escaping (Result<Data, Error>) -> Void
     ) -> URLSessionTask {
-        
+
         let completeOnMain: (Result<Data, Error>) -> Void = { result in
             DispatchQueue.main.async {
                 completion(result)
             }
         }
-        
+
         let task = dataTask(with: request) {
- data,
- response,
+            data,
+            response,
             error in
             if let error {
                 print(
@@ -23,7 +23,7 @@ extension URLSession {
                 completeOnMain(.failure(NetworkError.urlRequestError(error)))
                 return
             }
-            
+
             guard
                 let data,
                 let httpResponse = response as? HTTPURLResponse
@@ -32,9 +32,9 @@ extension URLSession {
                 completeOnMain(.failure(NetworkError.urlSessionError))
                 return
             }
-            
+
             let statusCode = httpResponse.statusCode
-            
+
             guard (200 ..< 300).contains(statusCode) else {
                 print("[URLSession.data]: httpStatusCode(\(statusCode))")
                 completeOnMain(
@@ -42,19 +42,19 @@ extension URLSession {
                 )
                 return
             }
-            
+
             completeOnMain(.success(data))
         }
-        
+
         return task
     }
-    
+
     func objectTask<T: Decodable>(
         for request: URLRequest,
         completion: @escaping (Result<T, Error>) -> Void
     ) -> URLSessionTask {
         let decoder = JSONDecoder()
-        
+
         let task = data(for: request) { (result: Result<Data, Error>) in
             switch result {
             case .success(let data):
@@ -67,12 +67,12 @@ extension URLSession {
                     )
                     completion(.failure(NetworkError.decodingError(error)))
                 }
-                
+
             case .failure(let error):
                 completion(.failure(error))
             }
         }
-        
+
         return task
     }
 }

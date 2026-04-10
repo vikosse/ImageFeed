@@ -17,11 +17,11 @@ enum APIConstants {
     static let defaultScheme = "https"
     static let unsplashHost = "unsplash.com"
     static let unsplashAPIHost = "api.unsplash.com"
-    
+
     static let authPath = "/oauth/token"
     static let mePath = "/me"
-    
+
     static func userProfilePath(username: String) -> String {
-            return "/users/\(username)"
-        }
+        "/users/\(username)"
+    }
 }
