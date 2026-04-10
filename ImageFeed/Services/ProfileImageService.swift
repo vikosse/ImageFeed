@@ -89,6 +89,13 @@ final class ProfileImageService {
         task.resume()
     }
     
+    func resetAvatar() {
+        avatarURL = nil
+        task?.cancel()
+        task = nil
+        lastUsername = nil
+    }
+    
     // MARK: - Private methods
     private func makeProfileImageRequest(username: String, token: String) -> URLRequest? {
         var urlComponents = URLComponents()
@@ -96,14 +103,8 @@ final class ProfileImageService {
         urlComponents.host = APIConstants.unsplashAPIHost
         urlComponents.path = APIConstants.userProfilePath(username: username)
         
-        guard let url = urlComponents.url else {
-            return nil
-        }
-        
-        var request = URLRequest(url: url)
-        request.httpMethod = HTTPMethod.get.rawValue
-        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
-        
-        return request
+        guard let url = urlComponents.url else { return nil }
+
+        return .authorizedRequest(url: url, method: .get, token: token)
     }
 }

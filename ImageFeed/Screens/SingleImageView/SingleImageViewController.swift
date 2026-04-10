@@ -5,17 +5,12 @@
 //  Created by Alekhina Viktoriya on 23/02/2026.
 //
 import UIKit
+import Kingfisher
 
 final class SingleImageViewController: UIViewController {
     
     // MARK: - Private property
-    var image: UIImage? {
-        didSet {
-            if isViewLoaded {
-                updateImage()
-            }
-        }
-    }
+    var imageURL: URL?
     
     // MARK: - IB Outlets & Action
     
@@ -26,7 +21,10 @@ final class SingleImageViewController: UIViewController {
     }
     @IBAction func didTapShareButton(_ sender: UIButton) {
         guard let image = imageView.image else { return }
-        let share = UIActivityViewController(activityItems: [image], applicationActivities: nil)
+        let share = UIActivityViewController(
+            activityItems: [image],
+            applicationActivities: nil
+        )
         present(share, animated: true)
     }
     
@@ -35,13 +33,57 @@ final class SingleImageViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        scrollView.delegate = self
         scrollView.minimumZoomScale = 0.1
         scrollView.maximumZoomScale = 1.25
+        imageView.contentMode = .scaleAspectFit
+        imageView.clipsToBounds = true
         
-        updateImage()
+        loadImage()
     }
     
     // MARK: - Private methods
+    
+    private func loadImage() {
+        guard let url = imageURL else {
+            print("url is nil")
+            return }
+        
+        UIBlockingProgressHUD.show()
+            
+        imageView.kf.setImage(with: url) { [weak self] result in
+            
+            UIBlockingProgressHUD.dismiss()
+                
+            guard let self else { return }
+                
+            switch result {
+            case .success(let value):
+                let image = value.image
+                self.imageView.frame.size = image.size
+                self.rescaleAndCenterImageInScrollView(image: image)
+                    
+            case .failure:
+                self.showError()
+            }
+        }
+    }
+    
+    private func showError() {
+        let alert = UIAlertController(
+            title: "Что-то пошло не так",
+            message: "Попробовать ещё раз?",
+            preferredStyle: .alert
+        )
+            
+        let retryAction = UIAlertAction(title: "Повторить", style: .default) { [weak self] _ in
+            self?.loadImage()
+        }
+            
+        alert.addAction(retryAction)
+            
+        present(alert, animated: true)
+    }
     
     private func rescaleAndCenterImageInScrollView(image: UIImage) {
         let minZoomScale = scrollView.minimumZoomScale
@@ -63,15 +105,7 @@ final class SingleImageViewController: UIViewController {
         let vScale = visibleRectSize.height / imageSize.height
         let scale = min(maxZoomScale, max(minZoomScale, min(hScale, vScale)))
 
-        scrollView.setZoomScale(scale, animated: false)
-        scrollView.layoutIfNeeded()
-
-        let newContentSize = scrollView.contentSize
-        let x = (newContentSize.width - visibleRectSize.width) / 2
-        let y = (newContentSize.height - visibleRectSize.height) / 2
-
-        scrollView.setContentOffset(CGPoint(x: x, y: y), animated: false)
-
+        scrollView.zoomScale = scale
         updateInsetsForCentering()
     }
     
@@ -89,27 +123,22 @@ final class SingleImageViewController: UIViewController {
             right: horizontalInset
         )
     }
-    
-    private func updateImage() {
-        guard let image else { return }
-        
-        imageView.image = image
-        imageView.frame.size = image.size
-        
-        rescaleAndCenterImageInScrollView(image: image)
-    }
 }
 // MARK: - UIScrollViewDelegate
 extension SingleImageViewController: UIScrollViewDelegate {
     func viewForZooming(in scrollView: UIScrollView) -> UIView? {
-        return imageView
+        imageView
     }
     
     func scrollViewDidZoom(_ scrollView: UIScrollView) {
         updateInsetsForCentering()
     }
     
-    func scrollViewDidEndZooming(_ scrollView: UIScrollView, with view: UIView?, atScale scale: CGFloat) {
+    func scrollViewDidEndZooming(
+        _ scrollView: UIScrollView,
+        with view: UIView?,
+        atScale scale: CGFloat
+    ) {
         updateInsetsForCentering()
     }
 }

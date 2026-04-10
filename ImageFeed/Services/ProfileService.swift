@@ -72,6 +72,13 @@ final class ProfileService {
         task.resume()
     }
     
+    func resetProfile() {
+        profile = nil
+        task?.cancel()
+        task = nil
+        lastToken = nil
+    }
+    
     // MARK: - Private methods
     private func makeProfileRequest(token: String) -> URLRequest? {
         var urlComponents = URLComponents()
@@ -79,14 +86,8 @@ final class ProfileService {
         urlComponents.host = APIConstants.unsplashAPIHost
         urlComponents.path = APIConstants.mePath
         
-        guard let url = urlComponents.url else {
-            return nil
-        }
-        
-        var request = URLRequest(url: url)
-        request.httpMethod = HTTPMethod.get.rawValue
-        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
-        
-        return request
+        guard let url = urlComponents.url else { return nil }
+
+        return .authorizedRequest(url: url, method: .get, token: token)
     }
 }

@@ -90,10 +90,7 @@ final class SplashViewController: UIViewController {
     }
     
     private func switchToTabBarController() {
-        guard let window = UIApplication.shared.connectedScenes
-            .compactMap({ $0 as? UIWindowScene })
-            .flatMap({ $0.windows })
-            .first(where: { $0.isKeyWindow }) else {
+        guard let window = UIApplication.shared.keyWindowScene else {
             assertionFailure("Invalid window configuration")
             return
         }
