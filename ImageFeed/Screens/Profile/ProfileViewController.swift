@@ -8,33 +8,32 @@ import UIKit
 import Kingfisher
 
 final class ProfileViewController: UIViewController {
-    
+
     // MARK: - Private properties
     private let profileService = ProfileService.shared
     private var profileImageServiceObserver: NSObjectProtocol?
-    
+
     private let avatarImageView = UIImageView()
     private let nameLabel = UILabel()
     private let usernameLabel = UILabel()
     private let descriptionLabel = UILabel()
     private let logoutButton = UIButton()
-    
-    
+
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         view.backgroundColor = UIColor(resource: .ypBlack)
-        
+
         setupAvatar()
         setupLogoutButton()
-        
+
         logoutButton.addTarget(
             self,
             action: #selector(didTapLogoutButton),
             for: .touchUpInside
         )
-        
+
         setupName()
         setupUserName()
         setupDescription()
@@ -42,7 +41,7 @@ final class ProfileViewController: UIViewController {
         if let profile = profileService.profile {
             updateProfileDetails(profile: profile)
         }
-        
+
         profileImageServiceObserver = NotificationCenter.default.addObserver(
             forName: ProfileImageService.didChangeNotification,
             object: nil,
@@ -51,15 +50,15 @@ final class ProfileViewController: UIViewController {
             guard let self else { return }
             self.updateAvatar()
         }
-        
+
         updateAvatar()
     }
-    
+
     override func viewDidLayoutSubviews() {
-           super.viewDidLayoutSubviews()
-           avatarImageView.layer.cornerRadius = avatarImageView.bounds.width / 2
-       }
-    
+        super.viewDidLayoutSubviews()
+        avatarImageView.layer.cornerRadius = avatarImageView.bounds.width / 2
+    }
+
     deinit {
         if let profileImageServiceObserver {
             NotificationCenter.default
@@ -73,7 +72,7 @@ final class ProfileViewController: UIViewController {
         avatarImageView.translatesAutoresizingMaskIntoConstraints = false
         avatarImageView.contentMode = .scaleAspectFill
         avatarImageView.clipsToBounds = true
-        
+
         view.addSubview(avatarImageView)
         NSLayoutConstraint.activate([
             avatarImageView.widthAnchor.constraint(equalToConstant: 70),
@@ -90,12 +89,12 @@ final class ProfileViewController: UIViewController {
                 )
         ])
     }
-    
+
     private func setupName() {
         nameLabel.font = UIFont.boldSystemFont(ofSize: 23)
         nameLabel.textColor = UIColor(resource: .ypWhite)
         nameLabel.translatesAutoresizingMaskIntoConstraints = false
-        
+
         view.addSubview(nameLabel)
         nameLabel.topAnchor
             .constraint(
@@ -105,11 +104,11 @@ final class ProfileViewController: UIViewController {
         nameLabel.leadingAnchor
             .constraint(equalTo: avatarImageView.leadingAnchor).isActive = true
     }
-    
+
     private func setupLogoutButton() {
         logoutButton.setImage(UIImage(resource: .logoutButton), for: .normal)
         logoutButton.translatesAutoresizingMaskIntoConstraints = false
-        
+
         view.addSubview(logoutButton)
         NSLayoutConstraint.activate([
             logoutButton.widthAnchor.constraint(equalToConstant: 44),
@@ -126,12 +125,12 @@ final class ProfileViewController: UIViewController {
                 )
         ])
     }
-    
+
     private func setupUserName() {
         usernameLabel.font = UIFont.systemFont(ofSize: 13, weight: .regular)
         usernameLabel.textColor = UIColor(resource: .ypGray)
         usernameLabel.translatesAutoresizingMaskIntoConstraints = false
-        
+
         view.addSubview(usernameLabel)
         usernameLabel.topAnchor
             .constraint(
@@ -141,13 +140,13 @@ final class ProfileViewController: UIViewController {
         usernameLabel.leadingAnchor
             .constraint(equalTo: avatarImageView.leadingAnchor).isActive = true
     }
-    
+
     private func setupDescription() {
         descriptionLabel.font = UIFont.systemFont(ofSize: 13, weight: .regular)
         descriptionLabel.textColor = UIColor(resource: .ypWhite)
         descriptionLabel.numberOfLines = 0
         descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
-        
+
         view.addSubview(descriptionLabel)
         NSLayoutConstraint.activate([
             descriptionLabel.topAnchor
@@ -158,13 +157,13 @@ final class ProfileViewController: UIViewController {
                 .constraint(equalTo: logoutButton.trailingAnchor)
         ])
     }
-    
+
     private func updateProfileDetails(profile: Profile) {
         nameLabel.text = profile.name
         usernameLabel.text = profile.loginName
         descriptionLabel.text = profile.bio ?? ""
     }
-    
+
     private func updateAvatar() {
         guard
             let profileImageURL = ProfileImageService.shared.avatarURL,
@@ -173,13 +172,13 @@ final class ProfileViewController: UIViewController {
             avatarImageView.image = UIImage(resource: .defaultUserPic)
             return
         }
-            
+
         avatarImageView.kf.setImage(
             with: url,
             placeholder: UIImage(resource: .defaultUserPic)
         )
     }
-    
+
     @objc
     private func didTapLogoutButton() {
         let alert = UIAlertController(
@@ -187,17 +186,17 @@ final class ProfileViewController: UIViewController {
             message: "Уверены, что хотите выйти?",
             preferredStyle: .alert
         )
-        
+
         let yesAction = UIAlertAction(title: "Да", style: .default) { [weak self] _ in
             ProfileLogoutService.shared.logout()
             self?.switchToSplashViewController()
         }
-        
+
         let noAction = UIAlertAction(title: "Нет", style: .cancel)
-        
+
         alert.addAction(yesAction)
         alert.addAction(noAction)
-        
+
         present(alert, animated: true)
     }
 
@@ -206,7 +205,7 @@ final class ProfileViewController: UIViewController {
             assertionFailure("Invalid window configuration")
             return
         }
-        
+
         let splashViewController = SplashViewController()
         window.rootViewController = splashViewController
     }

@@ -11,7 +11,7 @@ final class UIBlockingProgressHUD {
     private static var window: UIWindow? {
         UIApplication.shared.keyWindowScene
     }
-    
+
     static func show() {
         DispatchQueue.main.async {
             window?.isUserInteractionEnabled = false

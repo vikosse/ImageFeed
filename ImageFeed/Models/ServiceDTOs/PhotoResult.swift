@@ -15,7 +15,7 @@ struct PhotoResult: Codable {
     let likedByUser: Bool
     let description: String?
     let urls: UrlsResult
-    
+
     enum CodingKeys: String, CodingKey {
         case id
         case createdAt = "created_at"
@@ -34,7 +34,7 @@ struct UrlsResult: Codable {
 
 extension PhotoResult {
     private static let dateFormatter = ISO8601DateFormatter()
-    
+
     var photo: Photo {
         Photo(
             id: id,

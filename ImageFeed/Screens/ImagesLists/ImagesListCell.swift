@@ -12,24 +12,23 @@ protocol ImagesListCellDelegate: AnyObject {
 }
 
 final class ImagesListCell: UITableViewCell {
-    
+
     // MARK: - Static properties
-    
+
     static let reuseIdentifier = "ImagesListCell"
-    
+
     // MARK: - Public properties
-    
+
     weak var delegate: ImagesListCellDelegate?
 
-
     // MARK: - IBOutlets
-    
+
     @IBOutlet private weak var cellImageView: UIImageView!
     @IBOutlet private weak var dateLabel: UILabel!
     @IBOutlet private weak var likeButton: UIButton!
-    
+
     // MARK: - Lifecycle
-    
+
     override func awakeFromNib() {
         super.awakeFromNib()
         likeButton
@@ -39,22 +38,22 @@ final class ImagesListCell: UITableViewCell {
                 for: .touchUpInside
             )
     }
-        
+
     override func prepareForReuse() {
         super.prepareForReuse()
-            
+
         cellImageView.kf.cancelDownloadTask()
         cellImageView.image = nil
         dateLabel.text = nil
         setIsLiked(false)
     }
-    
+
     // MARK: - Actions
-    
+
     @objc private func didTapLikeButton() {
         delegate?.imageListCellDidTapLike(self)
     }
-    
+
     // MARK: - Public methods
     func setIsLiked(_ isLiked: Bool) {
         let image = isLiked ? UIImage(
@@ -63,5 +62,5 @@ final class ImagesListCell: UITableViewCell {
         )
         likeButton.setImage(image, for: .normal)
     }
-    
+
 }

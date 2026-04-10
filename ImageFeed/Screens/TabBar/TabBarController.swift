@@ -9,19 +9,19 @@ import UIKit
 // MARK: - TabBarController
 
 final class TabBarController: UITabBarController {
-    
+
     // MARK: - Lifecycle
-    
+
     override func awakeFromNib() {
         super.awakeFromNib()
         setupTabBar()
     }
-    
+
     // MARK: - Private Methods
-    
+
     private func setupTabBar() {
         let storyboard = UIStoryboard(name: "Main", bundle: .main)
-        
+
         let imagesListViewController = storyboard.instantiateViewController(
             withIdentifier: "ImagesListViewController"
         )
@@ -30,14 +30,14 @@ final class TabBarController: UITabBarController {
             image: UIImage(resource: .tabEditorialActive),
             selectedImage: nil
         )
-        
+
         let profileViewController = ProfileViewController()
         profileViewController.tabBarItem = UITabBarItem(
             title: "",
             image: UIImage(resource: .tabProfileActive),
             selectedImage: nil
         )
-        
+
         viewControllers = [imagesListViewController, profileViewController]
     }
 }

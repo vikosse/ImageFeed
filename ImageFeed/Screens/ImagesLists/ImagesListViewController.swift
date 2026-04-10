@@ -8,7 +8,7 @@ import UIKit
 import Kingfisher
 
 // MARK: - Private types
-   
+
 private enum Layout {
     static let tableVerticalInset: CGFloat = 12
     static let imageVerticalInset: CGFloat = 8
@@ -17,42 +17,42 @@ private enum Layout {
 }
 
 final class ImagesListViewController: UIViewController {
-    
+
     // MARK: - IBOutlets
     @IBOutlet private var tableView: UITableView!
 
     // MARK: - Private properties
     private let imagesListService = ImagesListService.shared
-    
+
     private var photos: [Photo] = []
-    
+
     private var imagesListObserver: NSObjectProtocol?
-    
+
     private lazy var dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateStyle = .long
         formatter.timeStyle = .none
         return formatter
     }()
-    
+
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         setupTableView()
         setupObserver()
 
         imagesListService.fetchPhotosNextPage()
     }
-    
+
     deinit {
         if let imagesListObserver {
             NotificationCenter.default.removeObserver(imagesListObserver)
         }
     }
-    
+
     // MARK: - Navigation
-        
+
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         guard segue.identifier == "ShowSingleImage",
               let viewController = segue.destination as? SingleImageViewController,
@@ -60,13 +60,13 @@ final class ImagesListViewController: UIViewController {
               photos.indices.contains(indexPath.row) else {
             return
         }
-            
+
         let photo = photos[indexPath.row]
         viewController.imageURL = URL(string: photo.largeImageURL)
     }
-    
+
     // MARK: - Setup
-    
+
     private func setupTableView() {
         tableView.contentInset = UIEdgeInsets(
             top: Layout.tableVerticalInset,
@@ -75,7 +75,7 @@ final class ImagesListViewController: UIViewController {
             right: 0
         )
     }
-    
+
     private func setupObserver() {
         imagesListObserver = NotificationCenter.default.addObserver(
             forName: ImagesListService.didChangeNotification,
@@ -85,18 +85,18 @@ final class ImagesListViewController: UIViewController {
             self?.updateTableViewAnimated()
         }
     }
-    
+
     // MARK: - Private methods
-    
+
     private func configCell(
         for cell: ImagesListCell,
         with indexPath: IndexPath
     ) {
         let photo = photos[indexPath.row]
-        
+
         cell.delegate = self
         cell.cellImageView.kf.indicatorType = .activity
-        
+
         if let url = URL(string: photo.thumbImageURL) {
             cell.cellImageView.kf.setImage(
                 with: url,
@@ -105,27 +105,27 @@ final class ImagesListViewController: UIViewController {
         } else {
             cell.cellImageView.image = UIImage(resource: .stub)
         }
-        
+
         cell.dateLabel.text = photo.createdAt.map {
             dateFormatter.string(from: $0)
         }
-        
+
         cell.setIsLiked(photo.isLiked)
     }
-    
+
     private func updateTableViewAnimated() {
         let oldCount = photos.count
         let newPhotos = imagesListService.photos
         let newCount = newPhotos.count
-            
+
         guard oldCount < newCount else { return }
-            
+
         photos = newPhotos
-            
-        let indexPaths = (oldCount..<newCount).map {
+
+        let indexPaths = (oldCount ..< newCount).map {
             IndexPath(row: $0, section: 0)
         }
-            
+
         tableView.performBatchUpdates {
             tableView.insertRows(at: indexPaths, with: .automatic)
         }
@@ -143,11 +143,11 @@ extension ImagesListViewController: UITableViewDataSource {
             withIdentifier: ImagesListCell.reuseIdentifier,
             for: indexPath
         )
-            
+
         guard let imageListCell = cell as? ImagesListCell else {
             return UITableViewCell()
         }
-            
+
         configCell(for: imageListCell, with: indexPath)
         return imageListCell
     }
@@ -156,25 +156,25 @@ extension ImagesListViewController: UITableViewDataSource {
 // MARK: - UITableViewDelegate
 
 extension ImagesListViewController: UITableViewDelegate {
-    
+
     func tableView(
         _ tableView: UITableView,
         heightForRowAt indexPath: IndexPath
     ) -> CGFloat {
         let photo = photos[indexPath.row]
-        
+
         guard photo.size.width > 0 else {
             return Layout.defaultHeight
         }
-        
+
         let tableWidth = tableView.bounds.width
         let imageViewWidth = tableWidth - Layout.horizontalInset * 2
         let ratio = photo.size.height / photo.size.width
         let imageViewHeight = imageViewWidth * ratio
-        
+
         return imageViewHeight + Layout.imageVerticalInset
     }
-    
+
     func tableView(
         _ tableView: UITableView,
         willDisplay cell: UITableViewCell,
@@ -188,35 +188,35 @@ extension ImagesListViewController: UITableViewDelegate {
 // MARK: - ImagesListCellDelegate
 
 extension ImagesListViewController: ImagesListCellDelegate {
-    
+
     func imageListCellDidTapLike(_ cell: ImagesListCell) {
         guard let indexPath = tableView.indexPath(for: cell) else { return }
-        
+
         let photo = photos[indexPath.row]
-        
+
         UIBlockingProgressHUD.show()
-        
+
         imagesListService.changeLike(
             photoId: photo.id,
             isLike: !photo.isLiked
         ) { [weak self] result in
             guard let self else { return }
-            
+
             switch result {
             case .success:
                 self.photos = self.imagesListService.photos
-                
+
                 guard self.photos.indices.contains(indexPath.row) else {
                     UIBlockingProgressHUD.dismiss()
                     return
                 }
-                
+
                 cell.setIsLiked(self.photos[indexPath.row].isLiked)
                 UIBlockingProgressHUD.dismiss()
-                
+
             case .failure:
                 UIBlockingProgressHUD.dismiss()
-                
+
                 let alert = UIAlertController(
                     title: "Ошибка",
                     message: "Что-то пошло не так",

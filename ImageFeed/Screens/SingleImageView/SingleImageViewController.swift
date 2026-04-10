@@ -8,12 +8,12 @@ import UIKit
 import Kingfisher
 
 final class SingleImageViewController: UIViewController {
-    
+
     // MARK: - Private property
     var imageURL: URL?
-    
+
     // MARK: - IB Outlets & Action
-    
+
     @IBOutlet private weak var imageView: UIImageView!
     @IBOutlet private weak var scrollView: UIScrollView!
     @IBAction private func didTapBackButton() {
@@ -27,64 +27,64 @@ final class SingleImageViewController: UIViewController {
         )
         present(share, animated: true)
     }
-    
+
     // MARK: - Lifecycle
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         scrollView.delegate = self
         scrollView.minimumZoomScale = 0.1
         scrollView.maximumZoomScale = 1.25
         imageView.contentMode = .scaleAspectFit
         imageView.clipsToBounds = true
-        
+
         loadImage()
     }
-    
+
     // MARK: - Private methods
-    
+
     private func loadImage() {
         guard let url = imageURL else {
             print("url is nil")
             return }
-        
+
         UIBlockingProgressHUD.show()
-            
+
         imageView.kf.setImage(with: url) { [weak self] result in
-            
+
             UIBlockingProgressHUD.dismiss()
-                
+
             guard let self else { return }
-                
+
             switch result {
             case .success(let value):
                 let image = value.image
                 self.imageView.frame.size = image.size
                 self.rescaleAndCenterImageInScrollView(image: image)
-                    
+
             case .failure:
                 self.showError()
             }
         }
     }
-    
+
     private func showError() {
         let alert = UIAlertController(
             title: "Что-то пошло не так",
             message: "Попробовать ещё раз?",
             preferredStyle: .alert
         )
-            
+
         let retryAction = UIAlertAction(title: "Повторить", style: .default) { [weak self] _ in
             self?.loadImage()
         }
-            
+
         alert.addAction(retryAction)
-            
+
         present(alert, animated: true)
     }
-    
+
     private func rescaleAndCenterImageInScrollView(image: UIImage) {
         let minZoomScale = scrollView.minimumZoomScale
         let maxZoomScale = scrollView.maximumZoomScale
@@ -108,14 +108,14 @@ final class SingleImageViewController: UIViewController {
         scrollView.zoomScale = scale
         updateInsetsForCentering()
     }
-    
+
     private func updateInsetsForCentering() {
         let scrollSize = scrollView.bounds.size
         let contentSize = scrollView.contentSize
-        
+
         let verticalInset = max(0, (scrollSize.height - contentSize.height) / 2)
         let horizontalInset = max(0, (scrollSize.width - contentSize.width) / 2)
-        
+
         scrollView.contentInset = UIEdgeInsets(
             top: verticalInset,
             left: horizontalInset,
@@ -129,11 +129,11 @@ extension SingleImageViewController: UIScrollViewDelegate {
     func viewForZooming(in scrollView: UIScrollView) -> UIView? {
         imageView
     }
-    
+
     func scrollViewDidZoom(_ scrollView: UIScrollView) {
         updateInsetsForCentering()
     }
-    
+
     func scrollViewDidEndZooming(
         _ scrollView: UIScrollView,
         with view: UIView?,
