@@ -23,9 +23,9 @@ final class ImagesListCell: UITableViewCell {
 
     // MARK: - IBOutlets
 
-    @IBOutlet private weak var cellImageView: UIImageView!
-    @IBOutlet private weak var dateLabel: UILabel!
-    @IBOutlet private weak var likeButton: UIButton!
+    @IBOutlet weak var cellImageView: UIImageView!
+    @IBOutlet weak var dateLabel: UILabel!
+    @IBOutlet weak var likeButton: UIButton!
 
     // MARK: - Lifecycle
 
