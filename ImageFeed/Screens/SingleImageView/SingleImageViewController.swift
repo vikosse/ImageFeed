@@ -9,9 +9,6 @@ import Kingfisher
 
 final class SingleImageViewController: UIViewController {
 
-    // MARK: - Private property
-    var imageURL: URL?
-
     // MARK: - IB Outlets & Action
 
     @IBOutlet private weak var imageView: UIImageView!
@@ -27,6 +24,9 @@ final class SingleImageViewController: UIViewController {
         )
         present(share, animated: true)
     }
+    
+    // MARK: - Private property
+    var imageURL: URL?
 
     // MARK: - Lifecycle
 

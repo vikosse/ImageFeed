@@ -58,7 +58,7 @@ final class ImagesListService {
 
     func changeLike(
         photoId: String,
-        isLike: Bool,
+        isLiked: Bool,
         completion: @escaping (Result<Void, Error>) -> Void
     ) {
         guard let token = tokenStorage.token else {
@@ -77,7 +77,7 @@ final class ImagesListService {
         }
 
         var request = URLRequest(url: url)
-        request.httpMethod = isLike ? HTTPMethod.post.rawValue : HTTPMethod.delete.rawValue
+        request.httpMethod = isLiked ? HTTPMethod.post.rawValue : HTTPMethod.delete.rawValue
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
 
         let task = urlSession.data(for: request) { [weak self] result in
@@ -85,20 +85,14 @@ final class ImagesListService {
 
             switch result {
             case .success:
-                if let index = self.photos.firstIndex(where: { $0.id == photoId }) {
+                if let index = self.photos.firstIndex(
+                    where: { $0.id == photoId
+                    }) {
                     let photo = self.photos[index]
 
-                    let updatedPhoto = Photo(
-                        id: photo.id,
-                        size: photo.size,
-                        createdAt: photo.createdAt,
-                        description: photo.description,
-                        thumbImageURL: photo.thumbImageURL,
-                        largeImageURL: photo.largeImageURL,
-                        isLiked: isLike
-                    )
-
-                    self.photos[index] = updatedPhoto
+                    if let index = self.photos.firstIndex(where: { $0.id == photoId }) {
+                        self.photos[index] = self.photos[index].with(isLiked: isLiked)
+                    }
                 }
 
                 completion(.success(()))
@@ -148,19 +142,24 @@ final class ImagesListService {
         switch result {
         case .success(let photoResults):
             let newPhotos = photoResults.map { $0.photo }
-            photos.append(contentsOf: newPhotos)
-            lastLoadedPage = nextPage
-            NotificationCenter.default.post(
-                name: ImagesListService.didChangeNotification,
-                object: self
-            )
-            task = nil
-
+            
+            DispatchQueue.main.async {
+                self.photos.append(contentsOf: newPhotos)
+                self.lastLoadedPage = nextPage
+                
+                NotificationCenter.default.post(
+                    name: ImagesListService.didChangeNotification,
+                    object: self
+                )
+                
+                self.task = nil
+            }
+            
         case .failure(let error):
             print(
                 "[ImagesListService.fetchPhotosNextPage]: \(error.localizedDescription)"
             )
-            task = nil
+            self.task = nil
         }
     }
 }

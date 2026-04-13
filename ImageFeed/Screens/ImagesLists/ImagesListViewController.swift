@@ -23,11 +23,9 @@ final class ImagesListViewController: UIViewController {
 
     // MARK: - Private properties
     private let imagesListService = ImagesListService.shared
-
     private var photos: [Photo] = []
-
     private var imagesListObserver: NSObjectProtocol?
-
+    
     private lazy var dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateStyle = .long
@@ -198,7 +196,7 @@ extension ImagesListViewController: ImagesListCellDelegate {
 
         imagesListService.changeLike(
             photoId: photo.id,
-            isLike: !photo.isLiked
+            isLiked: !photo.isLiked
         ) { [weak self] result in
             guard let self else { return }
 

@@ -15,3 +15,17 @@ struct Photo {
     let largeImageURL: String
     let isLiked: Bool
 }
+
+extension Photo {
+    func with(isLiked: Bool) -> Photo {
+        Photo(
+            id: id,
+            size: size,
+            createdAt: createdAt,
+            description: description,
+            thumbImageURL: thumbImageURL,
+            largeImageURL: largeImageURL,
+            isLiked: isLiked
+        )
+    }
+}

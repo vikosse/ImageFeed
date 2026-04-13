@@ -27,11 +27,6 @@ struct PhotoResult: Codable {
     }
 }
 
-struct UrlsResult: Codable {
-    let thumb: String
-    let full: String
-}
-
 extension PhotoResult {
     private static let dateFormatter = ISO8601DateFormatter()
 
