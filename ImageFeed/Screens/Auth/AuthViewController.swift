@@ -6,8 +6,6 @@
 //
 import UIKit
 
-// import ProgressHUD
-
 // MARK: - AuthViewControllerDelegate
 
 protocol AuthViewControllerDelegate: AnyObject {

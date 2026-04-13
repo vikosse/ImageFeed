@@ -20,8 +20,13 @@ enum APIConstants {
 
     static let authPath = "/oauth/token"
     static let mePath = "/me"
+    static let photosPath = "/photos"
 
     static func userProfilePath(username: String) -> String {
         "/users/\(username)"
+    }
+
+    static func photoLikePath(photoId: String) -> String {
+        "/photos/\(photoId)/like"
     }
 }
