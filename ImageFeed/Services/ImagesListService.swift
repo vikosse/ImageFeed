@@ -142,19 +142,19 @@ final class ImagesListService {
         switch result {
         case .success(let photoResults):
             let newPhotos = photoResults.map { $0.photo }
-            
+
             DispatchQueue.main.async {
                 self.photos.append(contentsOf: newPhotos)
                 self.lastLoadedPage = nextPage
-                
+
                 NotificationCenter.default.post(
                     name: ImagesListService.didChangeNotification,
                     object: self
                 )
-                
+
                 self.task = nil
             }
-            
+
         case .failure(let error):
             print(
                 "[ImagesListService.fetchPhotosNextPage]: \(error.localizedDescription)"

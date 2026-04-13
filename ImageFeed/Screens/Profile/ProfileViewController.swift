@@ -11,6 +11,7 @@ final class ProfileViewController: UIViewController {
 
     // MARK: - Private properties
     private let profileService = ProfileService.shared
+    private var animationLayers = Set<CALayer>()
     private var profileImageServiceObserver: NSObjectProtocol?
 
     private let avatarImageView = UIImageView()
@@ -38,16 +39,14 @@ final class ProfileViewController: UIViewController {
         setupUserName()
         setupDescription()
 
-        if let profile = profileService.profile {
-            updateProfileDetails(profile: profile)
-        }
-
         profileImageServiceObserver = NotificationCenter.default.addObserver(
             forName: ProfileImageService.didChangeNotification,
             object: nil,
             queue: .main
         ) { [weak self] _ in
             guard let self else { return }
+            self.animationLayers.forEach { $0.removeFromSuperlayer() }
+            self.animationLayers.removeAll()
             self.updateAvatar()
         }
 
@@ -57,6 +56,21 @@ final class ProfileViewController: UIViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         avatarImageView.layer.cornerRadius = avatarImageView.bounds.width / 2
+
+        guard animationLayers.isEmpty else { return }
+
+        addGradient(to: avatarImageView, cornerRadius: avatarImageView.bounds.width / 2)
+        addGradient(to: nameLabel, cornerRadius: 9)
+        addGradient(to: usernameLabel, cornerRadius: 9)
+        addGradient(
+            to: descriptionLabel,
+            size: CGSize(width: 67, height: 18),
+            cornerRadius: 9
+        )
+
+        if let profile = profileService.profile {
+            updateProfileDetails(profile: profile)
+        }
     }
 
     deinit {
@@ -159,6 +173,9 @@ final class ProfileViewController: UIViewController {
     }
 
     private func updateProfileDetails(profile: Profile) {
+        animationLayers.forEach { $0.removeFromSuperlayer() }
+        animationLayers.removeAll()
+
         nameLabel.text = profile.name
         usernameLabel.text = profile.loginName
         descriptionLabel.text = profile.bio ?? ""
@@ -208,5 +225,30 @@ final class ProfileViewController: UIViewController {
 
         let splashViewController = SplashViewController()
         window.rootViewController = splashViewController
+    }
+
+    private func addGradient(to view: UIView, size: CGSize? = nil, cornerRadius: CGFloat = 0) {
+        let gradient = CAGradientLayer()
+        gradient.frame = CGRect(origin: .zero, size: size ?? view.bounds.size)
+        gradient.locations = [0, 0.1, 0.3]
+        gradient.colors = [
+            UIColor(red: 0.682, green: 0.686, blue: 0.706, alpha: 0.3).cgColor,
+            UIColor(red: 0.682, green: 0.686, blue: 0.706, alpha: 1).cgColor,
+            UIColor(red: 0.682, green: 0.686, blue: 0.706, alpha: 0.3).cgColor
+        ]
+        gradient.startPoint = CGPoint(x: 0, y: 0.5)
+        gradient.endPoint = CGPoint(x: 1, y: 0.5)
+        gradient.cornerRadius = cornerRadius
+        gradient.masksToBounds = true
+
+        let animation = CABasicAnimation(keyPath: "locations")
+        animation.duration = 1.0
+        animation.repeatCount = .infinity
+        animation.fromValue = [0, 0.1, 0.3]
+        animation.toValue = [0, 0.8, 1]
+        gradient.add(animation, forKey: "locationsChange")
+
+        view.layer.addSublayer(gradient)
+        animationLayers.insert(gradient)
     }
 }

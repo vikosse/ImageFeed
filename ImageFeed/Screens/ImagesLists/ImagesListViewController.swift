@@ -16,6 +16,11 @@ private enum Layout {
     static let defaultHeight: CGFloat = 200
 }
 
+private enum FeedState {
+    case loading
+    case loaded
+}
+
 final class ImagesListViewController: UIViewController {
 
     // MARK: - IBOutlets
@@ -25,7 +30,8 @@ final class ImagesListViewController: UIViewController {
     private let imagesListService = ImagesListService.shared
     private var photos: [Photo] = []
     private var imagesListObserver: NSObjectProtocol?
-    
+    private var state: FeedState = .loading
+
     private lazy var dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateStyle = .long
@@ -90,19 +96,14 @@ final class ImagesListViewController: UIViewController {
         for cell: ImagesListCell,
         with indexPath: IndexPath
     ) {
+        guard state == .loaded else { return }
+
         let photo = photos[indexPath.row]
-
         cell.delegate = self
-        cell.cellImageView.kf.indicatorType = .activity
-
-        if let url = URL(string: photo.thumbImageURL) {
-            cell.cellImageView.kf.setImage(
-                with: url,
-                placeholder: UIImage(resource: .stub)
-            )
-        } else {
-            cell.cellImageView.image = UIImage(resource: .stub)
-        }
+        cell.setImage(
+            url: URL(string: photo.thumbImageURL),
+            placeholder: nil
+        )
 
         cell.dateLabel.text = photo.createdAt.map {
             dateFormatter.string(from: $0)
@@ -112,20 +113,22 @@ final class ImagesListViewController: UIViewController {
     }
 
     private func updateTableViewAnimated() {
-        let oldCount = photos.count
         let newPhotos = imagesListService.photos
+        guard !newPhotos.isEmpty else { return }
+
+        let oldCount = photos.count
         let newCount = newPhotos.count
-
-        guard oldCount < newCount else { return }
-
         photos = newPhotos
 
-        let indexPaths = (oldCount ..< newCount).map {
-            IndexPath(row: $0, section: 0)
-        }
-
-        tableView.performBatchUpdates {
-            tableView.insertRows(at: indexPaths, with: .automatic)
+        if state == .loading {
+            state = .loaded
+            tableView.reloadData()
+        } else {
+            guard oldCount < newCount else { return }
+            let indexPaths = (oldCount ..< newCount).map { IndexPath(row: $0, section: 0) }
+            tableView.performBatchUpdates {
+                tableView.insertRows(at: indexPaths, with: .automatic)
+            }
         }
     }
 }
@@ -133,7 +136,10 @@ final class ImagesListViewController: UIViewController {
 // MARK: - UITableViewDataSource
 extension ImagesListViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        photos.count
+        switch state {
+        case .loading: return 10
+        case .loaded: return photos.count
+        }
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -155,22 +161,18 @@ extension ImagesListViewController: UITableViewDataSource {
 
 extension ImagesListViewController: UITableViewDelegate {
 
-    func tableView(
-        _ tableView: UITableView,
-        heightForRowAt indexPath: IndexPath
-    ) -> CGFloat {
-        let photo = photos[indexPath.row]
-
-        guard photo.size.width > 0 else {
-            return Layout.defaultHeight
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        switch state {
+        case .loading:
+            return 200
+        case .loaded:
+            let photo = photos[indexPath.row]
+            guard photo.size.width > 0 else { return Layout.defaultHeight }
+            let tableWidth = tableView.bounds.width
+            let imageViewWidth = tableWidth - Layout.horizontalInset * 2
+            let ratio = photo.size.height / photo.size.width
+            return imageViewWidth * ratio + Layout.imageVerticalInset
         }
-
-        let tableWidth = tableView.bounds.width
-        let imageViewWidth = tableWidth - Layout.horizontalInset * 2
-        let ratio = photo.size.height / photo.size.width
-        let imageViewHeight = imageViewWidth * ratio
-
-        return imageViewHeight + Layout.imageVerticalInset
     }
 
     func tableView(
