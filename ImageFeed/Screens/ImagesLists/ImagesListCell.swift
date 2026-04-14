@@ -30,6 +30,7 @@ final class ImagesListCell: UITableViewCell {
 
     // MARK: - Private properties
     private var animationLayers = Set<CALayer>()
+    private var isImageLoaded = false
 
     // MARK: - Lifecycle
 
@@ -46,7 +47,7 @@ final class ImagesListCell: UITableViewCell {
     override func layoutSubviews() {
         super.layoutSubviews()
 
-        guard animationLayers.isEmpty else { return }
+        guard !isImageLoaded, animationLayers.isEmpty else { return }
         addGradient(to: cellImageView, cornerRadius: 16)
     }
 
@@ -57,6 +58,7 @@ final class ImagesListCell: UITableViewCell {
         cellImageView.image = nil
         dateLabel.text = nil
         setIsLiked(false)
+        isImageLoaded = false
 
         animationLayers.forEach { $0.removeFromSuperlayer() }
         animationLayers.removeAll()
@@ -83,14 +85,27 @@ final class ImagesListCell: UITableViewCell {
     }
 
     func setImage(url: URL?, placeholder: UIImage?) {
+        isImageLoaded = false
+        animationLayers.forEach { $0.removeFromSuperlayer() }
+        animationLayers.removeAll()
+        addGradient(to: cellImageView, cornerRadius: 16)
+
         cellImageView.kf.indicatorType = .none
         cellImageView.kf.setImage(
             with: url,
-            placeholder: nil  // ← убрали placeholder
-        ) { [weak self] _ in
+            placeholder: nil,
+            options: [.transition(.fade(0.2))]
+        ) { [weak self] result in
             guard let self else { return }
+            // remove skeleton in any case
             self.animationLayers.forEach { $0.removeFromSuperlayer() }
             self.animationLayers.removeAll()
+            switch result {
+            case .success:
+                self.isImageLoaded = true
+            case .failure:
+                self.isImageLoaded = false
+            }
         }
     }
 
