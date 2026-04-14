@@ -10,17 +10,24 @@ import Kingfisher
 final class ProfileViewController: UIViewController {
 
     // MARK: - Private properties
-    private let profileService = ProfileService.shared
+    private var presenter: ProfilePresenterProtocol?
     private var animationLayers = Set<CALayer>()
-    private var profileImageServiceObserver: NSObjectProtocol?
 
     private let avatarImageView = UIImageView()
     private let nameLabel = UILabel()
     private let usernameLabel = UILabel()
     private let descriptionLabel = UILabel()
     private let logoutButton = UIButton()
+    
+    // MARK: - Configure
+
+    func configure(_ presenter: ProfilePresenterProtocol) {
+        self.presenter = presenter
+        presenter.view = self
+    }
 
     // MARK: - Lifecycle
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -28,29 +35,12 @@ final class ProfileViewController: UIViewController {
 
         setupAvatar()
         setupLogoutButton()
-
-        logoutButton.addTarget(
-            self,
-            action: #selector(didTapLogoutButton),
-            for: .touchUpInside
-        )
-
+        logoutButton.addTarget(self, action: #selector(didTapLogoutButton), for: .touchUpInside)
         setupName()
         setupUserName()
         setupDescription()
 
-        profileImageServiceObserver = NotificationCenter.default.addObserver(
-            forName: ProfileImageService.didChangeNotification,
-            object: nil,
-            queue: .main
-        ) { [weak self] _ in
-            guard let self else { return }
-            self.animationLayers.forEach { $0.removeFromSuperlayer() }
-            self.animationLayers.removeAll()
-            self.updateAvatar()
-        }
-
-        updateAvatar()
+        presenter?.viewDidLoad()
     }
 
     override func viewDidLayoutSubviews() {
@@ -62,25 +52,11 @@ final class ProfileViewController: UIViewController {
         addGradient(to: avatarImageView, cornerRadius: avatarImageView.bounds.width / 2)
         addGradient(to: nameLabel, cornerRadius: 9)
         addGradient(to: usernameLabel, cornerRadius: 9)
-        addGradient(
-            to: descriptionLabel,
-            size: CGSize(width: 67, height: 18),
-            cornerRadius: 9
-        )
-
-        if let profile = profileService.profile {
-            updateProfileDetails(profile: profile)
-        }
+        addGradient(to: descriptionLabel, size: CGSize(width: 67, height: 18), cornerRadius: 9)
     }
 
-    deinit {
-        if let profileImageServiceObserver {
-            NotificationCenter.default
-                .removeObserver(profileImageServiceObserver)
-        }
-    }
+    // MARK: - UI Setup
 
-    // MARK: - UI setup
     private func setupAvatar() {
         avatarImageView.image = UIImage(resource: .defaultUserPic)
         avatarImageView.translatesAutoresizingMaskIntoConstraints = false
@@ -91,16 +67,8 @@ final class ProfileViewController: UIViewController {
         NSLayoutConstraint.activate([
             avatarImageView.widthAnchor.constraint(equalToConstant: 70),
             avatarImageView.heightAnchor.constraint(equalToConstant: 70),
-            avatarImageView.topAnchor
-                .constraint(
-                    equalTo: view.safeAreaLayoutGuide.topAnchor,
-                    constant: 32
-                ),
-            avatarImageView.leadingAnchor
-                .constraint(
-                    equalTo: view.safeAreaLayoutGuide.leadingAnchor,
-                    constant: 16
-                )
+            avatarImageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 32),
+            avatarImageView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16)
         ])
     }
 
@@ -110,13 +78,8 @@ final class ProfileViewController: UIViewController {
         nameLabel.translatesAutoresizingMaskIntoConstraints = false
 
         view.addSubview(nameLabel)
-        nameLabel.topAnchor
-            .constraint(
-                equalTo: avatarImageView.bottomAnchor,
-                constant: 8
-            ).isActive = true
-        nameLabel.leadingAnchor
-            .constraint(equalTo: avatarImageView.leadingAnchor).isActive = true
+        nameLabel.topAnchor.constraint(equalTo: avatarImageView.bottomAnchor, constant: 8).isActive = true
+        nameLabel.leadingAnchor.constraint(equalTo: avatarImageView.leadingAnchor).isActive = true
     }
 
     private func setupLogoutButton() {
@@ -127,16 +90,8 @@ final class ProfileViewController: UIViewController {
         NSLayoutConstraint.activate([
             logoutButton.widthAnchor.constraint(equalToConstant: 44),
             logoutButton.heightAnchor.constraint(equalToConstant: 44),
-            logoutButton.trailingAnchor
-                .constraint(
-                    equalTo: view.safeAreaLayoutGuide.trailingAnchor,
-                    constant: -16
-                ),
-            logoutButton.topAnchor
-                .constraint(
-                    equalTo: view.safeAreaLayoutGuide.topAnchor,
-                    constant: 45
-                )
+            logoutButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
+            logoutButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 45)
         ])
     }
 
@@ -146,13 +101,8 @@ final class ProfileViewController: UIViewController {
         usernameLabel.translatesAutoresizingMaskIntoConstraints = false
 
         view.addSubview(usernameLabel)
-        usernameLabel.topAnchor
-            .constraint(
-                equalTo: nameLabel.bottomAnchor,
-                constant: 8
-            ).isActive = true
-        usernameLabel.leadingAnchor
-            .constraint(equalTo: avatarImageView.leadingAnchor).isActive = true
+        usernameLabel.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 8).isActive = true
+        usernameLabel.leadingAnchor.constraint(equalTo: avatarImageView.leadingAnchor).isActive = true
     }
 
     private func setupDescription() {
@@ -163,38 +113,13 @@ final class ProfileViewController: UIViewController {
 
         view.addSubview(descriptionLabel)
         NSLayoutConstraint.activate([
-            descriptionLabel.topAnchor
-                .constraint(equalTo: usernameLabel.bottomAnchor, constant: 8),
-            descriptionLabel.leadingAnchor
-                .constraint(equalTo: avatarImageView.leadingAnchor),
-            descriptionLabel.trailingAnchor
-                .constraint(equalTo: logoutButton.trailingAnchor)
+            descriptionLabel.topAnchor.constraint(equalTo: usernameLabel.bottomAnchor, constant: 8),
+            descriptionLabel.leadingAnchor.constraint(equalTo: avatarImageView.leadingAnchor),
+            descriptionLabel.trailingAnchor.constraint(equalTo: logoutButton.trailingAnchor)
         ])
     }
 
-    private func updateProfileDetails(profile: Profile) {
-        animationLayers.forEach { $0.removeFromSuperlayer() }
-        animationLayers.removeAll()
-
-        nameLabel.text = profile.name
-        usernameLabel.text = profile.loginName
-        descriptionLabel.text = profile.bio ?? ""
-    }
-
-    private func updateAvatar() {
-        guard
-            let profileImageURL = ProfileImageService.shared.avatarURL,
-            let url = URL(string: profileImageURL)
-        else {
-            avatarImageView.image = UIImage(resource: .defaultUserPic)
-            return
-        }
-
-        avatarImageView.kf.setImage(
-            with: url,
-            placeholder: UIImage(resource: .defaultUserPic)
-        )
-    }
+    // MARK: - Actions
 
     @objc
     private func didTapLogoutButton() {
@@ -203,17 +128,12 @@ final class ProfileViewController: UIViewController {
             message: "Уверены, что хотите выйти?",
             preferredStyle: .alert
         )
-
         let yesAction = UIAlertAction(title: "Да", style: .default) { [weak self] _ in
             ProfileLogoutService.shared.logout()
             self?.switchToSplashViewController()
         }
-
-        let noAction = UIAlertAction(title: "Нет", style: .cancel)
-
         alert.addAction(yesAction)
-        alert.addAction(noAction)
-
+        alert.addAction(UIAlertAction(title: "Нет", style: .cancel))
         present(alert, animated: true)
     }
 
@@ -222,9 +142,7 @@ final class ProfileViewController: UIViewController {
             assertionFailure("Invalid window configuration")
             return
         }
-
-        let splashViewController = SplashViewController()
-        window.rootViewController = splashViewController
+        window.rootViewController = SplashViewController()
     }
 
     private func addGradient(to view: UIView, size: CGSize? = nil, cornerRadius: CGFloat = 0) {
@@ -250,5 +168,26 @@ final class ProfileViewController: UIViewController {
 
         view.layer.addSublayer(gradient)
         animationLayers.insert(gradient)
+    }
+}
+
+// MARK: - ProfileViewControllerProtocol
+
+extension ProfileViewController: ProfileViewControllerProtocol {
+
+    func updateProfileDetails(name: String, loginName: String, bio: String) {
+        animationLayers.forEach { $0.removeFromSuperlayer() }
+        animationLayers.removeAll()
+
+        nameLabel.text = name
+        usernameLabel.text = loginName
+        descriptionLabel.text = bio
+    }
+
+    func updateAvatar(url: URL) {
+        animationLayers.forEach { $0.removeFromSuperlayer() }
+        animationLayers.removeAll()
+
+        avatarImageView.kf.setImage(with: url, placeholder: UIImage(resource: .defaultUserPic))
     }
 }
