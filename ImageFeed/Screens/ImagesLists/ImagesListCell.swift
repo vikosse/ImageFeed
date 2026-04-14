@@ -77,11 +77,9 @@ final class ImagesListCell: UITableViewCell {
 
     // MARK: - Public methods
     func setIsLiked(_ isLiked: Bool) {
-        let image = isLiked ? UIImage(
-            resource: .filledHeart
-        ) : UIImage(resource: .heart
-        )
+        let image = isLiked ? UIImage(resource: .filledHeart) : UIImage(resource: .heart)
         likeButton.setImage(image, for: .normal)
+        likeButton.accessibilityIdentifier = isLiked ? "like button on" : "like button off"
     }
 
     func setImage(url: URL?, placeholder: UIImage?) {
