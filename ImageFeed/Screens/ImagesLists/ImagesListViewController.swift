@@ -1,3 +1,9 @@
+//
+//  ImagesListViewController.swift
+//  ImageFeed
+//
+//  Created by Alekhina Viktoriya on 03/02/2026.
+//
 import UIKit
 import Kingfisher
 

@@ -67,7 +67,7 @@ final class ImagesListViewControllerTests: XCTestCase {
         XCTAssertTrue(viewController.reloadTableViewCalled)
     }
 
-    // MARK: - Тест 5: Презентер добавляет новые строки при догрузке фото
+    // MARK: - Тест 5: Презентер добавляет новые ячейки при догрузке фото
 
     func testPresenterCallsUpdateTableViewAnimatedWhenPhotosAdded() {
         let viewController = ImagesListViewControllerSpy()

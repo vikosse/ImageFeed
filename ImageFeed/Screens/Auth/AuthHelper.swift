@@ -1,16 +1,33 @@
+//
+//  AuthHelper.swift
+//  ImageFeed
+//
+//  Created by Alekhina Viktoriya on 13/04/2026.
+//
 import Foundation
+
+// MARK: - AuthHelperProtocol
 
 protocol AuthHelperProtocol {
     func authRequest() -> URLRequest?
     func code(from url: URL) -> String?
 }
 
+// MARK: - AuthHelper
+
 final class AuthHelper: AuthHelperProtocol {
+
+    // MARK: - Properties
+
     let configuration: AuthConfiguration
+
+    // MARK: - Init
 
     init(configuration: AuthConfiguration = .standard) {
         self.configuration = configuration
     }
+
+    // MARK: - AuthHelperProtocol
 
     func authRequest() -> URLRequest? {
         guard let url = authURL() else {
@@ -19,6 +36,8 @@ final class AuthHelper: AuthHelperProtocol {
 
         return URLRequest(url: url)
     }
+
+    // MARK: - Methods
 
     func authURL() -> URL? {
         guard
