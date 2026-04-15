@@ -6,11 +6,13 @@
 //
 import Foundation
 
+// MARK: - ProfileService
+
 final class ProfileService {
 
     static let shared = ProfileService()
 
-    // MARK: - Private properties
+    // MARK: - Private Properties
     private let urlSession = URLSession.shared
 
     private var task: URLSessionTask?
@@ -20,7 +22,7 @@ final class ProfileService {
 
     private init() {}
 
-    // MARK: - Public methods
+    // MARK: - Public Methods
     func fetchProfile(
         _ token: String,
         completion: @escaping (Result<Profile, Error>) -> Void
@@ -79,7 +81,7 @@ final class ProfileService {
         lastToken = nil
     }
 
-    // MARK: - Private methods
+    // MARK: - Private Methods
     private func makeProfileRequest(token: String) -> URLRequest? {
         var urlComponents = URLComponents()
         urlComponents.scheme = APIConstants.defaultScheme

@@ -64,9 +64,9 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		FEA502552F8ECC900094C207 /* ImageFeedUITests1 */ = {
+		FEA502552F8ECC900094C207 /* ImageFeedUITests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = ImageFeedUITests1;
+			path = ImageFeedUITests;
 			sourceTree = "<group>";
 		};
 		FED811562F3287DE006AEECA /* ImageFeed */ = {
@@ -140,7 +140,7 @@
 			children = (
 				FED811562F3287DE006AEECA /* ImageFeed */,
 				FED8345B2F8D9110008DC4C8 /* ImageFeedTests */,
-				FEA502552F8ECC900094C207 /* ImageFeedUITests1 */,
+				FEA502552F8ECC900094C207 /* ImageFeedUITests */,
 				FEB7D5542F5DE7E400099FB3 /* Frameworks */,
 				FED811552F3287DE006AEECA /* Products */,
 			);
@@ -175,7 +175,7 @@
 				FEA5025B2F8ECC900094C207 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				FEA502552F8ECC900094C207 /* ImageFeedUITests1 */,
+				FEA502552F8ECC900094C207 /* ImageFeedUITests */,
 			);
 			name = ImageFeedUITests1;
 			packageProductDependencies = (

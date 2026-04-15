@@ -8,11 +8,13 @@
 import Foundation
 import WebKit
 
+// MARK: - ProfileLogoutService
+
 final class ProfileLogoutService {
 
     static let shared = ProfileLogoutService()
 
-    // MARK: - Private properties
+    // MARK: - Private Properties
 
     private let tokenStorage = OAuth2TokenStorage.shared
     private let profileService = ProfileService.shared
@@ -23,7 +25,7 @@ final class ProfileLogoutService {
 
     private init() {}
 
-    // MARK: - Public methods
+    // MARK: - Public Methods
 
     func logout() {
         tokenStorage.removeToken()
@@ -33,7 +35,7 @@ final class ProfileLogoutService {
         cleanCookies()
     }
 
-    // MARK: - Private methods
+    // MARK: - Private Methods
 
     private func cleanCookies() {
         HTTPCookieStorage.shared.removeCookies(since: Date.distantPast)

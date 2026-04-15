@@ -1,10 +1,3 @@
-//
-//  ImagesListPresenter.swift
-//  ImageFeed
-//
-//  Created by Alekhina Viktoriya on 14/04/2026.
-//
-
 import Foundation
 
 // MARK: - ImagesListViewControllerProtocol
@@ -25,6 +18,15 @@ protocol ImagesListPresenterProtocol: AnyObject {
     func changeLike(photoId: String, isLiked: Bool, completion: @escaping (Result<Void, Error>) -> Void)
 }
 
+// MARK: - ImagesListServiceProtocol
+
+protocol ImagesListServiceProtocol: AnyObject {
+    var photos: [Photo] { get }
+    var didChangeNotification: Notification.Name { get }
+    func fetchPhotosNextPage()
+    func changeLike(photoId: String, isLiked: Bool, completion: @escaping (Result<Void, Error>) -> Void)
+}
+
 // MARK: - ImagesListPresenter
 
 final class ImagesListPresenter: ImagesListPresenterProtocol {
@@ -35,12 +37,12 @@ final class ImagesListPresenter: ImagesListPresenterProtocol {
 
     private(set) var photos: [Photo] = []
 
-    private let imagesListService: ImagesListService
+    private let imagesListService: ImagesListServiceProtocol
     private var imagesListObserver: NSObjectProtocol?
 
     // MARK: - Init
 
-    init(imagesListService: ImagesListService = .shared) {
+    init(imagesListService: ImagesListServiceProtocol = ImagesListService.shared) {
         self.imagesListService = imagesListService
     }
 
@@ -48,14 +50,13 @@ final class ImagesListPresenter: ImagesListPresenterProtocol {
 
     func viewDidLoad() {
         imagesListObserver = NotificationCenter.default.addObserver(
-            forName: ImagesListService.didChangeNotification,
+            forName: imagesListService.didChangeNotification,
             object: imagesListService,
             queue: .main
         ) { [weak self] _ in
             self?.handlePhotosUpdate()
         }
 
-        // Запрашиваем первую страницу
         imagesListService.fetchPhotosNextPage()
     }
 
@@ -101,5 +102,13 @@ final class ImagesListPresenter: ImagesListPresenterProtocol {
         if let imagesListObserver {
             NotificationCenter.default.removeObserver(imagesListObserver)
         }
+    }
+}
+
+// MARK: - ImagesListServiceProtocol
+
+extension ImagesListService: ImagesListServiceProtocol {
+    var didChangeNotification: Notification.Name {
+        Self.didChangeNotification
     }
 }

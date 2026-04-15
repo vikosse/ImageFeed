@@ -55,16 +55,21 @@ final class SplashViewController: UIViewController {
     private func showAuthViewController() {
         let storyboard = UIStoryboard(name: "Main", bundle: .main)
 
-        guard let authViewController = storyboard.instantiateViewController(
-            withIdentifier: "AuthViewController"
-        ) as? AuthViewController else {
-            assertionFailure("Failed to instantiate AuthViewController")
+        guard let navigationController = storyboard.instantiateViewController(
+            withIdentifier: "AuthNavigationController"
+        ) as? UINavigationController else {
+            assertionFailure("Failed to instantiate AuthNavigationController")
+            return
+        }
+
+        guard let authViewController = navigationController.viewControllers.first as? AuthViewController else {
+            assertionFailure("Failed to get AuthViewController")
             return
         }
 
         authViewController.delegate = self
-        authViewController.modalPresentationStyle = .fullScreen
-        present(authViewController, animated: true)
+        navigationController.modalPresentationStyle = .fullScreen
+        present(navigationController, animated: true)
     }
 
     private func fetchProfile(token: String) {

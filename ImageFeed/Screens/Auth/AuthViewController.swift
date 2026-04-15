@@ -65,7 +65,6 @@ final class AuthViewController: UIViewController {
 extension AuthViewController: WebViewViewControllerDelegate {
 
     func webViewViewController(_ vc: WebViewViewController, didAuthenticateWithCode code: String) {
-        vc.dismiss(animated: true)
         UIBlockingProgressHUD.show()
 
         fetchOAuthToken(code) { [weak self] result in
@@ -77,13 +76,10 @@ extension AuthViewController: WebViewViewControllerDelegate {
                 self.delegate?.didAuthenticate(self)
             case .failure(let error):
                 print("[AuthViewController.webViewViewController]: failure - error: \(error.localizedDescription)")
+                vc.navigationController?.popViewController(animated: true)
                 self.showAuthErrorAlert()
             }
         }
-    }
-
-    func webViewViewControllerDidCancel(_ vc: WebViewViewController) {
-        vc.dismiss(animated: true)
     }
 }
 
@@ -105,4 +101,3 @@ extension AuthViewController {
         present(alertController, animated: true)
     }
 }
-

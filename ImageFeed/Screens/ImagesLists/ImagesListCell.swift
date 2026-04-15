@@ -1,24 +1,22 @@
-//
-//  ImagesListCell.swift
-//  ImageFeed
-//
-//  Created by Alekhina Viktoriya on 15/02/2026.
-//
 import UIKit
 import Kingfisher
+
+// MARK: - ImagesListCellDelegate
 
 protocol ImagesListCellDelegate: AnyObject {
     func imageListCellDidTapLike(_ cell: ImagesListCell)
 }
 
+// MARK: - ImagesListCell
+
 final class ImagesListCell: UITableViewCell {
 
-    // MARK: - Static properties
+    // MARK: - Static Properties
 
     static let reuseIdentifier = "ImagesListCell"
     private static let animationStartTime = CACurrentMediaTime()
 
-    // MARK: - Public properties
+    // MARK: - Public Properties
 
     weak var delegate: ImagesListCellDelegate?
 
@@ -28,7 +26,8 @@ final class ImagesListCell: UITableViewCell {
     @IBOutlet weak var dateLabel: UILabel!
     @IBOutlet weak var likeButton: UIButton!
 
-    // MARK: - Private properties
+    // MARK: - Private Properties
+    
     private var animationLayers = Set<CALayer>()
     private var isImageLoaded = false
 
@@ -77,11 +76,12 @@ final class ImagesListCell: UITableViewCell {
         delegate?.imageListCellDidTapLike(self)
     }
 
-    // MARK: - Public methods
+    // MARK: - Public Methods
+    
     func setIsLiked(_ isLiked: Bool) {
         let image = isLiked ? UIImage(resource: .filledHeart) : UIImage(resource: .heart)
         likeButton.setImage(image, for: .normal)
-        likeButton.accessibilityIdentifier = isLiked ? "like button on" : "like button off"
+        likeButton.accessibilityIdentifier = isLiked ? "FilledHeart" : "Heart"
     }
 
     func setImage(url: URL?, placeholder: UIImage?) {
@@ -93,11 +93,10 @@ final class ImagesListCell: UITableViewCell {
         cellImageView.kf.indicatorType = .none
         cellImageView.kf.setImage(
             with: url,
-            placeholder: nil,
+            placeholder: placeholder,
             options: [.transition(.fade(0.2))]
         ) { [weak self] result in
             guard let self else { return }
-            // remove skeleton in any case
             self.animationLayers.forEach { $0.removeFromSuperlayer() }
             self.animationLayers.removeAll()
             switch result {
@@ -109,7 +108,8 @@ final class ImagesListCell: UITableViewCell {
         }
     }
 
-    // MARK: - Private methods
+    // MARK: - Private Methods
+    
     private func addGradient(to view: UIView, cornerRadius: CGFloat = 0) {
         let gradient = CAGradientLayer()
         gradient.frame = view.bounds

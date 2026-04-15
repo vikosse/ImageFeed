@@ -1,9 +1,3 @@
-//
-//  ImagesListViewController.swift
-//  ImageFeed
-//
-//  Created by Alekhina Viktoriya on 03/02/2026.
-//
 import UIKit
 import Kingfisher
 
@@ -16,17 +10,14 @@ private enum Layout {
     static let defaultHeight: CGFloat = 200
 }
 
-//private enum FeedState {
-//    case loading
-//    case loaded
-//}
-
 final class ImagesListViewController: UIViewController {
 
     // MARK: - IBOutlets
+    
     @IBOutlet private var tableView: UITableView!
 
     // MARK: - Private properties
+    
     private var presenter: ImagesListPresenterProtocol?
 
     private lazy var dateFormatter: DateFormatter = {
@@ -44,6 +35,7 @@ final class ImagesListViewController: UIViewController {
     }
 
     // MARK: - Lifecycle
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -88,12 +80,10 @@ final class ImagesListViewController: UIViewController {
 
 extension ImagesListViewController: ImagesListViewControllerProtocol {
 
-    // Презентер говорит "перезагрузи таблицу целиком" (первая загрузка)
     func reloadTableView() {
         tableView.reloadData()
     }
 
-    // Презентер говорит "анимированно добавь новые строки"
     func updateTableViewAnimated(oldCount: Int, newCount: Int) {
         let indexPaths = (oldCount ..< newCount).map { IndexPath(row: $0, section: 0) }
         tableView.performBatchUpdates {
@@ -117,7 +107,6 @@ extension ImagesListViewController: ImagesListViewControllerProtocol {
 extension ImagesListViewController: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // Пока фото не загружены — показываем 10 заглушек с анимацией
         return presenter?.photos.count ?? 10
     }
 

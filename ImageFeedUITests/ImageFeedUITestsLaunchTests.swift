@@ -1,6 +1,6 @@
 //
-//  ImageFeedUITests1LaunchTests.swift
-//  ImageFeedUITests1
+//  ImageFeedUITestsLaunchTests.swift
+//  ImageFeedUITests
 //
 //  Created by Alekhina Viktoriya on 14/04/2026.
 //

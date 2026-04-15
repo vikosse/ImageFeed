@@ -45,6 +45,7 @@
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Trr-mg-x3V" userLabel="BackButton">
                                 <rect key="frame" x="8" y="67" width="24" height="24"/>
+                                <accessibility key="accessibilityConfiguration" identifier="backButton"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="24" id="X3Y-uV-Sju"/>
                                     <constraint firstAttribute="height" constant="24" id="nJa-ad-8Vt"/>
@@ -228,7 +229,7 @@
                             </imageView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="eP1-Ns-lua">
                                 <rect key="frame" x="16" y="646" width="361" height="48"/>
-                                <accessibility key="accessibilityConfiguration" identifier="Authenticate"/>
+                                <accessibility key="accessibilityConfiguration" identifier="loginButton"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="48" id="KxV-Mb-w68"/>
                                 </constraints>
@@ -308,7 +309,7 @@
         <!--Navigation Controller-->
         <scene sceneID="vKM-pw-bcQ">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="FaT-5q-MuH" sceneMemberID="viewController">
+                <navigationController storyboardIdentifier="AuthNavigationController" automaticallyAdjustsScrollViewInsets="NO" id="FaT-5q-MuH" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationItem key="navigationItem" id="jrH-rO-9Ax"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="HqD-iC-APM">

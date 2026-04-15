@@ -4,7 +4,6 @@
 //
 //  Created by Alekhina Viktoriya on 14/04/2026.
 //
-
 import Foundation
 
 // MARK: - ProfileViewControllerProtocol
@@ -21,6 +20,19 @@ protocol ProfilePresenterProtocol: AnyObject {
     func viewDidLoad()
 }
 
+// MARK: - ProfileServiceProtocol
+
+protocol ProfileServiceProtocol: AnyObject {
+    var profile: Profile? { get }
+}
+
+// MARK: - ProfileImageServiceProtocol
+
+protocol ProfileImageServiceProtocol: AnyObject {
+    var avatarURL: String? { get }
+    var didChangeNotification: Notification.Name { get }
+}
+
 // MARK: - ProfilePresenter
 
 final class ProfilePresenter: ProfilePresenterProtocol {
@@ -29,15 +41,15 @@ final class ProfilePresenter: ProfilePresenterProtocol {
 
     weak var view: ProfileViewControllerProtocol?
 
-    private let profileService: ProfileService
-    private let profileImageService: ProfileImageService
+    private let profileService: ProfileServiceProtocol
+    private let profileImageService: ProfileImageServiceProtocol
     private var profileImageServiceObserver: NSObjectProtocol?
 
     // MARK: - Init
 
     init(
-        profileService: ProfileService = .shared,
-        profileImageService: ProfileImageService = .shared
+        profileService: ProfileServiceProtocol = ProfileService.shared,
+        profileImageService: ProfileImageServiceProtocol = ProfileImageService.shared
     ) {
         self.profileService = profileService
         self.profileImageService = profileImageService
@@ -57,7 +69,7 @@ final class ProfilePresenter: ProfilePresenterProtocol {
         updateAvatarIfNeeded()
 
         profileImageServiceObserver = NotificationCenter.default.addObserver(
-            forName: ProfileImageService.didChangeNotification,
+            forName: profileImageService.didChangeNotification,
             object: nil,
             queue: .main
         ) { [weak self] _ in
@@ -80,5 +92,17 @@ final class ProfilePresenter: ProfilePresenterProtocol {
         if let profileImageServiceObserver {
             NotificationCenter.default.removeObserver(profileImageServiceObserver)
         }
+    }
+}
+
+// MARK: - ProfileServiceProtocol
+
+extension ProfileService: ProfileServiceProtocol {}
+
+// MARK: - ProfileImageServiceProtocol
+
+extension ProfileImageService: ProfileImageServiceProtocol {
+    var didChangeNotification: Notification.Name {
+        Self.didChangeNotification
     }
 }

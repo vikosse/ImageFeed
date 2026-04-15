@@ -7,11 +7,14 @@
 import UIKit
 import Kingfisher
 
+// MARK: - ProfileViewController
+
 final class ProfileViewController: UIViewController {
 
     // MARK: - Private properties
     private var presenter: ProfilePresenterProtocol?
     private var animationLayers = Set<CALayer>()
+    private var isProfileLoaded = false
 
     private let avatarImageView = UIImageView()
     private let nameLabel = UILabel()
@@ -47,7 +50,7 @@ final class ProfileViewController: UIViewController {
         super.viewDidLayoutSubviews()
         avatarImageView.layer.cornerRadius = avatarImageView.bounds.width / 2
 
-        guard animationLayers.isEmpty else { return }
+        guard !isProfileLoaded, animationLayers.isEmpty else { return }
 
         addGradient(to: avatarImageView, cornerRadius: avatarImageView.bounds.width / 2)
         addGradient(to: nameLabel, cornerRadius: 9)
@@ -84,7 +87,7 @@ final class ProfileViewController: UIViewController {
 
     private func setupLogoutButton() {
         logoutButton.setImage(UIImage(resource: .logoutButton), for: .normal)
-        logoutButton.accessibilityIdentifier = "logout button"
+        logoutButton.accessibilityIdentifier = "logoutButton"
         logoutButton.translatesAutoresizingMaskIntoConstraints = false
 
         view.addSubview(logoutButton)
@@ -138,6 +141,8 @@ final class ProfileViewController: UIViewController {
         present(alert, animated: true)
     }
 
+    // MARK: - Private methods
+
     private func switchToSplashViewController() {
         guard let window = UIApplication.shared.keyWindowScene else {
             assertionFailure("Invalid window configuration")
@@ -179,6 +184,7 @@ extension ProfileViewController: ProfileViewControllerProtocol {
     func updateProfileDetails(name: String, loginName: String, bio: String) {
         animationLayers.forEach { $0.removeFromSuperlayer() }
         animationLayers.removeAll()
+        isProfileLoaded = true
 
         nameLabel.text = name
         usernameLabel.text = loginName
@@ -188,7 +194,8 @@ extension ProfileViewController: ProfileViewControllerProtocol {
     func updateAvatar(url: URL) {
         animationLayers.forEach { $0.removeFromSuperlayer() }
         animationLayers.removeAll()
+        isProfileLoaded = true
 
-        avatarImageView.kf.setImage(with: url, placeholder: UIImage(resource: .defaultUserPic))
+        avatarImageView.kf.setImage(with: url, placeholder: UIImage(resource: .defaultUserPic), options: [.transition(.fade(0.2))])
     }
 }

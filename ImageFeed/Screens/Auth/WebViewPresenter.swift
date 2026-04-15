@@ -8,7 +8,7 @@ import Foundation
 
 // MARK: - WebViewPresenterProtocol
 
-public protocol WebViewPresenterProtocol {
+protocol WebViewPresenterProtocol {
     var view: WebViewViewControllerProtocol? { get set }
     func viewDidLoad()
     func didUpdateProgressValue(_ newValue: Double)
