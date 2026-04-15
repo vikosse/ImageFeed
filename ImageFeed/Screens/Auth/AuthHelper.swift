@@ -16,7 +16,7 @@ final class AuthHelper: AuthHelperProtocol {
         guard let url = authURL() else {
             return nil
         }
-        
+
         return URLRequest(url: url)
     }
 
@@ -27,14 +27,14 @@ final class AuthHelper: AuthHelperProtocol {
             assertionFailure("Invalid authorization URL string: \(configuration.authURLString)")
             return nil
         }
-        
+
         urlComponents.queryItems = [
             URLQueryItem(name: "client_id", value: configuration.accessKey),
             URLQueryItem(name: "redirect_uri", value: configuration.redirectURI),
             URLQueryItem(name: "response_type", value: "code"),
             URLQueryItem(name: "scope", value: configuration.accessScope)
         ]
-        
+
         return urlComponents.url
     }
 

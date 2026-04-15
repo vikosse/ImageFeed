@@ -13,11 +13,11 @@ private enum Layout {
 final class ImagesListViewController: UIViewController {
 
     // MARK: - IBOutlets
-    
+
     @IBOutlet private var tableView: UITableView!
 
     // MARK: - Private properties
-    
+
     private var presenter: ImagesListPresenterProtocol?
 
     private lazy var dateFormatter: DateFormatter = {
@@ -26,7 +26,7 @@ final class ImagesListViewController: UIViewController {
         formatter.timeStyle = .none
         return formatter
     }()
-    
+
     // MARK: - Configure
 
     func configure(_ presenter: ImagesListPresenterProtocol) {
@@ -35,7 +35,7 @@ final class ImagesListViewController: UIViewController {
     }
 
     // MARK: - Lifecycle
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -107,7 +107,7 @@ extension ImagesListViewController: ImagesListViewControllerProtocol {
 extension ImagesListViewController: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return presenter?.photos.count ?? 10
+        presenter?.photos.count ?? 10
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {

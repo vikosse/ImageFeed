@@ -27,7 +27,7 @@ final class ImagesListCell: UITableViewCell {
     @IBOutlet weak var likeButton: UIButton!
 
     // MARK: - Private Properties
-    
+
     private var animationLayers = Set<CALayer>()
     private var isImageLoaded = false
 
@@ -77,7 +77,7 @@ final class ImagesListCell: UITableViewCell {
     }
 
     // MARK: - Public Methods
-    
+
     func setIsLiked(_ isLiked: Bool) {
         let image = isLiked ? UIImage(resource: .filledHeart) : UIImage(resource: .heart)
         likeButton.setImage(image, for: .normal)
@@ -109,7 +109,7 @@ final class ImagesListCell: UITableViewCell {
     }
 
     // MARK: - Private Methods
-    
+
     private func addGradient(to view: UIView, cornerRadius: CGFloat = 0) {
         let gradient = CAGradientLayer()
         gradient.frame = view.bounds

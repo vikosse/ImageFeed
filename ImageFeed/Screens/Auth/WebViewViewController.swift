@@ -25,16 +25,16 @@ final class WebViewViewController: UIViewController & WebViewViewControllerProto
     @IBOutlet private weak var progressView: UIProgressView!
 
     // MARK: - Internal properties
-    
+
     weak var delegate: WebViewViewControllerDelegate?
     var presenter: WebViewPresenterProtocol?
 
     // MARK: - Private properties
-    
+
     private var progressObservation: NSKeyValueObservation?
 
     // MARK: - Lifecycle
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         webView.navigationDelegate = self

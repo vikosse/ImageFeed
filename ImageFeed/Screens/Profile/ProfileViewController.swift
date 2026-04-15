@@ -21,7 +21,7 @@ final class ProfileViewController: UIViewController {
     private let usernameLabel = UILabel()
     private let descriptionLabel = UILabel()
     private let logoutButton = UIButton()
-    
+
     // MARK: - Configure
 
     func configure(_ presenter: ProfilePresenterProtocol) {
@@ -30,7 +30,7 @@ final class ProfileViewController: UIViewController {
     }
 
     // MARK: - Lifecycle
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
