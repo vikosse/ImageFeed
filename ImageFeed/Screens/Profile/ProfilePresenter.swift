@@ -95,10 +95,6 @@ final class ProfilePresenter: ProfilePresenterProtocol {
     }
 }
 
-// MARK: - ProfileServiceProtocol
-
-extension ProfileService: ProfileServiceProtocol {}
-
 // MARK: - ProfileImageServiceProtocol
 
 extension ProfileImageService: ProfileImageServiceProtocol {
