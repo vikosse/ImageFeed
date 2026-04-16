@@ -11,6 +11,7 @@ import UIKit
 protocol AuthViewControllerDelegate: AnyObject {
     func didAuthenticate(_ vc: AuthViewController)
 }
+
 // MARK: - AuthViewController
 
 final class AuthViewController: UIViewController {
@@ -33,12 +34,16 @@ final class AuthViewController: UIViewController {
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == showWebViewSegueIdentifier {
-            guard let webViewViewController = segue.destination as? WebViewViewController else {
-                assertionFailure(
-                    "Failed to prepare for \(showWebViewSegueIdentifier)"
-                )
+            guard
+                let webViewViewController = segue.destination as? WebViewViewController
+            else {
+                assertionFailure("Failed to prepare for \(showWebViewSegueIdentifier)")
                 return
             }
+            let authHelper = AuthHelper()
+            let webViewPresenter = WebViewPresenter(authHelper: authHelper)
+            webViewViewController.presenter = webViewPresenter
+            webViewPresenter.view = webViewViewController
             webViewViewController.delegate = self
         } else {
             super.prepare(for: segue, sender: sender)
@@ -48,65 +53,41 @@ final class AuthViewController: UIViewController {
     // MARK: - Private Methods
 
     private func configureBackButton() {
-        navigationController?.navigationBar.backIndicatorImage = UIImage(
-            resource: .backButton
-        )
-        navigationController?.navigationBar.backIndicatorTransitionMaskImage = UIImage(
-            resource: .backButton
-        )
-        navigationItem.backBarButtonItem = UIBarButtonItem(
-            title: "",
-            style: .plain,
-            target: nil,
-            action: nil
-        )
-        navigationItem.backBarButtonItem?.tintColor = UIColor(
-            resource: .ypBlack
-        )
+        navigationController?.navigationBar.backIndicatorImage = UIImage(resource: .backButton)
+        navigationController?.navigationBar.backIndicatorTransitionMaskImage = UIImage(resource: .backButton)
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
+        navigationItem.backBarButtonItem?.tintColor = UIColor(resource: .ypBlack)
     }
 }
 
 // MARK: - WebViewViewControllerDelegate
+
 extension AuthViewController: WebViewViewControllerDelegate {
 
-    func webViewViewController(
-        _ vc: WebViewViewController,
-        didAuthenticateWithCode code: String
-    ) {
-        vc.dismiss(animated: true)
-
+    func webViewViewController(_ vc: WebViewViewController, didAuthenticateWithCode code: String) {
         UIBlockingProgressHUD.show()
 
         fetchOAuthToken(code) { [weak self] result in
             guard let self else { return }
-
             UIBlockingProgressHUD.dismiss()
 
             switch result {
             case .success:
                 self.delegate?.didAuthenticate(self)
-
             case .failure(let error):
-                print(
-                    "[AuthViewController.webViewViewController]: failure - error: \(error.localizedDescription)"
-                )
+                print("[AuthViewController.webViewViewController]: failure - error: \(error.localizedDescription)")
+                vc.navigationController?.popViewController(animated: true)
                 self.showAuthErrorAlert()
             }
         }
     }
-
-    func webViewViewControllerDidCancel(_ vc: WebViewViewController) {
-        vc.dismiss(animated: true)
-    }
 }
 
 // MARK: - Private helpers
+
 extension AuthViewController {
 
-    private func fetchOAuthToken(
-        _ code: String,
-        completion: @escaping (Result<String, Error>) -> Void
-    ) {
+    private func fetchOAuthToken(_ code: String, completion: @escaping (Result<String, Error>) -> Void) {
         oauth2Service.fetchOAuthToken(code, completion: completion)
     }
 
@@ -116,13 +97,7 @@ extension AuthViewController {
             message: "Не удалось войти в систему",
             preferredStyle: .alert
         )
-
-        let okAction = UIAlertAction(
-            title: "Ок",
-            style: .default
-        )
-
-        alertController.addAction(okAction)
+        alertController.addAction(UIAlertAction(title: "Ок", style: .default))
         present(alertController, animated: true)
     }
 }

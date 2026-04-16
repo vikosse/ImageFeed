@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="24412" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="24765" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="FaT-5q-MuH">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24405"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24743"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
@@ -45,6 +45,7 @@
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Trr-mg-x3V" userLabel="BackButton">
                                 <rect key="frame" x="8" y="67" width="24" height="24"/>
+                                <accessibility key="accessibilityConfiguration" identifier="backButton"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="24" id="X3Y-uV-Sju"/>
                                     <constraint firstAttribute="height" constant="24" id="nJa-ad-8Vt"/>
@@ -228,6 +229,7 @@
                             </imageView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="eP1-Ns-lua">
                                 <rect key="frame" x="16" y="646" width="361" height="48"/>
+                                <accessibility key="accessibilityConfiguration" identifier="loginButton"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="48" id="KxV-Mb-w68"/>
                                 </constraints>
@@ -264,7 +266,7 @@
         <!--WebView Scene Controller-->
         <scene sceneID="aDX-0K-L0o">
             <objects>
-                <viewController title="WebView Scene Controller" id="sYj-Zd-4Rl" customClass="WebViewViewController" customModule="ImageFeed" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="WebViewViewController" title="WebView Scene Controller" id="sYj-Zd-4Rl" customClass="WebViewViewController" customModule="ImageFeed" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="dDm-Fu-BCZ">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -307,7 +309,7 @@
         <!--Navigation Controller-->
         <scene sceneID="vKM-pw-bcQ">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="FaT-5q-MuH" sceneMemberID="viewController">
+                <navigationController storyboardIdentifier="AuthNavigationController" automaticallyAdjustsScrollViewInsets="NO" id="FaT-5q-MuH" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationItem key="navigationItem" id="jrH-rO-9Ax"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="HqD-iC-APM">

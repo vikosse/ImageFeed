@@ -48,6 +48,11 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		FEA502552F8ECC900094C207 /* ImageFeedUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = ImageFeedUITests;
+			sourceTree = "<group>";
+		};
 		FED811562F3287DE006AEECA /* ImageFeed */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
@@ -56,14 +61,9 @@
 			path = ImageFeed;
 			sourceTree = "<group>";
 		};
-		FED8116D2F3287DF006AEECA /* ImageFeedTests */ = {
+		FED8345B2F8D9110008DC4C8 /* ImageFeedTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = ImageFeedTests;
-			sourceTree = "<group>";
-		};
-		FED811772F3287DF006AEECA /* ImageFeedUITests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = ImageFeedUITests;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -109,8 +109,8 @@
 			isa = PBXGroup;
 			children = (
 				FED811562F3287DE006AEECA /* ImageFeed */,
-				FED8116D2F3287DF006AEECA /* ImageFeedTests */,
-				FED811772F3287DF006AEECA /* ImageFeedUITests */,
+				FED8345B2F8D9110008DC4C8 /* ImageFeedTests */,
+				FEA502552F8ECC900094C207 /* ImageFeedUITests */,
 				FEB7D5542F5DE7E400099FB3 /* Frameworks */,
 				FED811552F3287DE006AEECA /* Products */,
 			);
@@ -168,7 +168,7 @@
 				FED8116C2F3287DF006AEECA /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				FED8116D2F3287DF006AEECA /* ImageFeedTests */,
+				FED8345B2F8D9110008DC4C8 /* ImageFeedTests */,
 			);
 			name = ImageFeedTests;
 			packageProductDependencies = (
@@ -191,7 +191,7 @@
 				FED811762F3287DF006AEECA /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				FED811772F3287DF006AEECA /* ImageFeedUITests */,
+				FEA502552F8ECC900094C207 /* ImageFeedUITests */,
 			);
 			name = ImageFeedUITests;
 			packageProductDependencies = (
@@ -207,7 +207,7 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 2600;
+				LastSwiftUpdateCheck = 2640;
 				LastUpgradeCheck = 2600;
 				TargetAttributes = {
 					FED811532F3287DE006AEECA = {
@@ -510,7 +510,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 8P5ATVJGAD;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.6;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = ru.yandex.practicum.ImageFeedTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -532,7 +532,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 8P5ATVJGAD;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.6;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = ru.yandex.practicum.ImageFeedTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -553,6 +553,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 8P5ATVJGAD;
 				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.6;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = ru.yandex.practicum.ImageFeedUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -573,6 +574,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 8P5ATVJGAD;
 				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.6;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = ru.yandex.practicum.ImageFeedUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";

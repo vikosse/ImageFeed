@@ -7,74 +7,67 @@
 import UIKit
 import WebKit
 
-enum WebViewConstants {
-    static let unsplashAuthorizeURLString = "https://unsplash.com/oauth/authorize"
+// MARK: - WebViewViewControllerProtocol
+
+protocol WebViewViewControllerProtocol: AnyObject {
+    var presenter: WebViewPresenterProtocol? { get set }
+    func load(request: URLRequest)
+    func setProgressValue(_ newValue: Float)
+    func setProgressHidden(_ isHidden: Bool)
 }
 
-final class WebViewViewController: UIViewController {
+// MARK: - WebViewViewController
+
+final class WebViewViewController: UIViewController & WebViewViewControllerProtocol {
 
     // MARK: - IBOutlets & IBActions
     @IBOutlet private weak var webView: WKWebView!
     @IBOutlet private weak var progressView: UIProgressView!
 
     // MARK: - Internal properties
+
     weak var delegate: WebViewViewControllerDelegate?
+    var presenter: WebViewPresenterProtocol?
 
     // MARK: - Private properties
+
     private var progressObservation: NSKeyValueObservation?
 
     // MARK: - Lifecycle
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        loadAuthView()
-        updateProgress()
-
         webView.navigationDelegate = self
+        webView.accessibilityIdentifier = "UnsplashWebView"
+
+        presenter?.viewDidLoad()
 
         progressObservation = webView.observe(
             \.estimatedProgress,
             options: [.new]
-        ) { [weak self] _, _ in
-            self?.updateProgress()
+        ) { [weak self] _, change in
+            guard let newValue = change.newValue else { return }
+            self?.presenter?.didUpdateProgressValue(newValue)
         }
     }
 
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
+    // MARK: - WebViewViewControllerProtocol methods
 
-        if isMovingFromParent {
-            delegate?.webViewViewControllerDidCancel(self)
-        }
-    }
-
-    // MARK: - Private methods
-    private func loadAuthView() {
-        guard var urlComponents = URLComponents(string: WebViewConstants.unsplashAuthorizeURLString) else {
-            return
-        }
-
-        urlComponents.queryItems = [
-            URLQueryItem(name: "client_id", value: Constants.accessKey),
-            URLQueryItem(name: "redirect_uri", value: Constants.redirectURI),
-            URLQueryItem(name: "response_type", value: "code"),
-            URLQueryItem(name: "scope", value: Constants.accessScope)
-        ]
-
-        guard let url = urlComponents.url else {
-            return
-        }
-
-        let request = URLRequest(url: url)
+    func load(request: URLRequest) {
         webView.load(request)
     }
 
-    private func updateProgress() {
-        progressView.progress = Float(webView.estimatedProgress)
-        progressView.isHidden = abs(webView.estimatedProgress - 1.0) <= 0.0001
+    func setProgressValue(_ newValue: Float) {
+        progressView.progress = newValue
+    }
+
+    func setProgressHidden(_ isHidden: Bool) {
+        progressView.isHidden = isHidden
     }
 }
 
 // MARK: - WKNavigationDelegate
+
 extension WebViewViewController: WKNavigationDelegate {
     func webView(
         _ webView: WKWebView,
@@ -90,16 +83,9 @@ extension WebViewViewController: WKNavigationDelegate {
     }
 
     private func code(from navigationAction: WKNavigationAction) -> String? {
-        if
-            let url = navigationAction.request.url,
-            let urlComponents = URLComponents(string: url.absoluteString),
-            urlComponents.path == "/oauth/authorize/native",
-            let items = urlComponents.queryItems,
-            let codeItem = items.first(where: { $0.name == "code" })
-        {
-            return codeItem.value
-        } else {
-            return nil
+        if let url = navigationAction.request.url {
+            return presenter?.code(from: url)
         }
+        return nil
     }
 }

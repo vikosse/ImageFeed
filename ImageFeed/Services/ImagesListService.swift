@@ -7,20 +7,22 @@
 
 import Foundation
 
+// MARK: - ImagesListService
+
 final class ImagesListService {
 
-    // MARK: - Static properties
+    // MARK: - Static Properties
 
     static let shared = ImagesListService()
     static let didChangeNotification = Notification.Name(
         rawValue: "ImagesListServiceDidChange"
     )
 
-    // MARK: - Public properties
+    // MARK: - Public Properties
 
     private(set) var photos: [Photo] = []
 
-    // MARK: - Private properties
+    // MARK: - Private Properties
 
     private var lastLoadedPage: Int?
     private var task: URLSessionTask?
@@ -31,7 +33,7 @@ final class ImagesListService {
 
     private init() {}
 
-    // MARK: - Public methods
+    // MARK: - Public Methods
 
     func fetchPhotosNextPage() {
         assert(Thread.isMainThread)
@@ -85,14 +87,8 @@ final class ImagesListService {
 
             switch result {
             case .success:
-                if let index = self.photos.firstIndex(
-                    where: { $0.id == photoId
-                    }) {
-                    let photo = self.photos[index]
-
-                    if let index = self.photos.firstIndex(where: { $0.id == photoId }) {
-                        self.photos[index] = self.photos[index].with(isLiked: isLiked)
-                    }
+                if let index = self.photos.firstIndex(where: { $0.id == photoId }) {
+                    self.photos[index] = self.photos[index].with(isLiked: isLiked)
                 }
 
                 completion(.success(()))
@@ -112,7 +108,7 @@ final class ImagesListService {
         task = nil
     }
 
-    // MARK: - Private methods
+    // MARK: - Private Methods
 
     private func makePhotosRequest(page: Int) -> URLRequest? {
         guard let token = tokenStorage.token else {

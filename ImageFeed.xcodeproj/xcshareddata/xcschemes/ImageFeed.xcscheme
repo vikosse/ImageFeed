@@ -31,7 +31,7 @@
       shouldAutocreateTestPlan = "YES">
       <Testables>
          <TestableReference
-            skipped = "NO"
+            skipped = "YES"
             parallelizable = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
@@ -49,6 +49,28 @@
                BlueprintIdentifier = "FED811732F3287DF006AEECA"
                BuildableName = "ImageFeedUITests.xctest"
                BlueprintName = "ImageFeedUITests"
+               ReferencedContainer = "container:ImageFeed.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "FED834592F8D9110008DC4C8"
+               BuildableName = "ImageFeedTests1.xctest"
+               BlueprintName = "ImageFeedTests1"
+               ReferencedContainer = "container:ImageFeed.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "FEA502532F8ECC900094C207"
+               BuildableName = "ImageFeedUITests1.xctest"
+               BlueprintName = "ImageFeedUITests1"
                ReferencedContainer = "container:ImageFeed.xcodeproj">
             </BuildableReference>
          </TestableReference>

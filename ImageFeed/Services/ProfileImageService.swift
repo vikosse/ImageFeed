@@ -6,6 +6,8 @@
 //
 import Foundation
 
+// MARK: - ProfileImageService
+
 final class ProfileImageService {
 
     static let shared = ProfileImageService()
@@ -13,7 +15,7 @@ final class ProfileImageService {
         rawValue: "ProfileImageProviderDidChange"
     )
 
-    // MARK: - Private properties
+    // MARK: - Private Properties
     private let urlSession = URLSession.shared
     private let tokenStorage = OAuth2TokenStorage.shared
 
@@ -24,7 +26,7 @@ final class ProfileImageService {
 
     private init() {}
 
-    // MARK: - Public methods
+    // MARK: - Public Methods
     func fetchProfileImageURL(
         username: String,
         _ completion: @escaping (Result<String, Error>) -> Void
@@ -96,7 +98,7 @@ final class ProfileImageService {
         lastUsername = nil
     }
 
-    // MARK: - Private methods
+    // MARK: - Private Methods
     private func makeProfileImageRequest(username: String, token: String) -> URLRequest? {
         var urlComponents = URLComponents()
         urlComponents.scheme = APIConstants.defaultScheme
