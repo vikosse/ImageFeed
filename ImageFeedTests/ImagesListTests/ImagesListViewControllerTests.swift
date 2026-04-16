@@ -11,52 +11,72 @@ import XCTest
 @MainActor
 final class ImagesListViewControllerTests: XCTestCase {
 
-    // MARK: - Тест 1: Контроллер вызывает viewDidLoad презентера
+    // MARK: - Properties
+
+    private var service: ImagesListServiceSpy!
+    private var presenter: ImagesListPresenter!
+    private var viewControllerSpy: ImagesListViewControllerSpy!
+
+    // MARK: - Lifecycle
+
+    override func setUp() {
+        super.setUp()
+        service = ImagesListServiceSpy()
+        presenter = ImagesListPresenter(imagesListService: service)
+        viewControllerSpy = ImagesListViewControllerSpy()
+        presenter.view = viewControllerSpy
+    }
+
+    override func tearDown() {
+        service = nil
+        presenter = nil
+        viewControllerSpy = nil
+        super.tearDown()
+    }
+
+    // MARK: - Tests
 
     func testViewControllerCallsViewDidLoad() {
+        // Given
         let storyboard = UIStoryboard(name: "Main", bundle: Bundle(for: ImagesListViewController.self))
         let viewController = storyboard.instantiateViewController(
             withIdentifier: "ImagesListViewController"
         ) as! ImagesListViewController
-        let presenter = ImagesListPresenterSpy()
-        viewController.configure(presenter)
+        let presenterSpy = ImagesListPresenterSpy()
+        viewController.configure(presenterSpy)
 
+        // When
         _ = viewController.view
 
-        XCTAssertTrue(presenter.viewDidLoadCalled)
+        // Then
+        XCTAssertTrue(presenterSpy.viewDidLoadCalled)
     }
-
-    // MARK: - Тест 2: Презентер запрашивает следующую страницу при viewDidLoad
 
     func testPresenterCallsFetchPhotosNextPageOnViewDidLoad() {
-        let service = ImagesListServiceSpy()
-        let presenter = ImagesListPresenter(imagesListService: service)
+        // Given
 
+        // When
         presenter.viewDidLoad()
 
+        // Then
         XCTAssertTrue(service.fetchPhotosNextPageCalled)
     }
-
-    // MARK: - Тест 3: Презентер запрашивает следующую страницу
 
     func testPresenterCallsFetchPhotosNextPage() {
-        let service = ImagesListServiceSpy()
-        let presenter = ImagesListPresenter(imagesListService: service)
+        // Given
 
+        // When
         presenter.fetchNextPage()
 
+        // Then
         XCTAssertTrue(service.fetchPhotosNextPageCalled)
     }
 
-    // MARK: - Тест 4: Презентер перезагружает таблицу при первой загрузке фото
-
     func testPresenterCallsReloadTableViewWhenPhotosLoaded() {
-        let viewController = ImagesListViewControllerSpy()
-        let service = ImagesListServiceSpy()
-        let presenter = ImagesListPresenter(imagesListService: service)
-        presenter.view = viewController
+        // Given
         service.photos = [makePhoto(id: "1")]
 
+        // When
         presenter.viewDidLoad()
         NotificationCenter.default.post(
             name: service.didChangeNotification,
@@ -64,18 +84,15 @@ final class ImagesListViewControllerTests: XCTestCase {
         )
         RunLoop.main.run(until: Date(timeIntervalSinceNow: 0.1))
 
-        XCTAssertTrue(viewController.reloadTableViewCalled)
+        // Then
+        XCTAssertTrue(viewControllerSpy.reloadTableViewCalled)
     }
 
-    // MARK: - Тест 5: Презентер добавляет новые ячейки при догрузке фото
-
     func testPresenterCallsUpdateTableViewAnimatedWhenPhotosAdded() {
-        let viewController = ImagesListViewControllerSpy()
-        let service = ImagesListServiceSpy()
-        let presenter = ImagesListPresenter(imagesListService: service)
-        presenter.view = viewController
-
+        // Given
         service.photos = [makePhoto(id: "1")]
+
+        // When
         presenter.viewDidLoad()
         NotificationCenter.default.post(
             name: service.didChangeNotification,
@@ -90,40 +107,39 @@ final class ImagesListViewControllerTests: XCTestCase {
         )
         RunLoop.main.run(until: Date(timeIntervalSinceNow: 0.1))
 
-        XCTAssertTrue(viewController.updateTableViewAnimatedCalled)
-        XCTAssertEqual(viewController.oldCount, 1)
-        XCTAssertEqual(viewController.newCount, 2)
+        // Then
+        XCTAssertTrue(viewControllerSpy.updateTableViewAnimatedCalled)
+        XCTAssertEqual(viewControllerSpy.oldCount, 1)
+        XCTAssertEqual(viewControllerSpy.newCount, 2)
     }
 
-    // MARK: - Тест 6: Презентер обновляет photos после успешного лайка
-
     func testPresenterUpdatesPhotosAfterChangeLikeSuccess() {
-        let service = ImagesListServiceSpy()
-        let presenter = ImagesListPresenter(imagesListService: service)
+        // Given
         service.photos = [makePhoto(id: "1", isLiked: true)]
         service.changeLikeResult = .success(())
 
+        // When
         presenter.changeLike(photoId: "1", isLiked: true) { _ in }
 
+        // Then
         XCTAssertTrue(service.changeLikeCalled)
         XCTAssertEqual(presenter.photos.first?.id, "1")
         XCTAssertEqual(presenter.photos.first?.isLiked, true)
     }
 
-    // MARK: - Тест 7: Презентер возвращает ошибку при неуспешном лайке
-
     func testPresenterReturnsFailureWhenChangeLikeFails() {
-        let service = ImagesListServiceSpy()
-        let presenter = ImagesListPresenter(imagesListService: service)
+        // Given
         service.changeLikeResult = .failure(ImagesListServiceSpyError.test)
         var receivedError: Error?
 
+        // When
         presenter.changeLike(photoId: "1", isLiked: true) { result in
             if case .failure(let error) = result {
                 receivedError = error
             }
         }
 
+        // Then
         XCTAssertTrue(service.changeLikeCalled)
         XCTAssertNotNil(receivedError)
     }
